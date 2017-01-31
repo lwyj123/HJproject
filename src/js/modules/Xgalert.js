@@ -156,7 +156,7 @@
     /**
      * 容器，用来设定弹出框的模板
      * @param  {[type]}   conType  [description]
-     * @param  {Function} callback [description]
+     * @param  {Function} callback 输入3个参数，第一个是数组依次存遮罩、主体的string表达，第二个是标题栏的html，第三个是拖曳对象（暂时不理解怎么用的）
      * @return {[type]}            [description]
      */
     Class.pt.vessel = function(conType, callback) {
@@ -207,12 +207,6 @@
         if (typeof config.area === 'string') {
             config.area = config.area === 'auto' ? ['', ''] : [config.area, ''];
         }
-
-        //anim兼容旧版shift
-        if (config.shift) {
-            config.anim = config.shift;
-        }
-
 
         //依据情况初始化（比如关闭其他弹出层）
         switch (config.type) {
@@ -601,7 +595,6 @@
         }
 
         $('#layui-layer-moves, #layui-layer-shade' + index).remove();
-        ready.rescollbar(index);
 
         setTimeout(function() {
             remove();
