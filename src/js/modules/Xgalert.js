@@ -133,12 +133,15 @@
     var doms = ['layui-layer', '.layui-layer-title', '.layui-layer-main', '.layui-layer-dialog', 'layui-layer-iframe', 'layui-layer-content', 'layui-layer-btn', 'layui-layer-close'];
     doms.anim = ['layer-anim', 'layer-anim-01', 'layer-anim-02', 'layer-anim-03', 'layer-anim-04', 'layer-anim-05', 'layer-anim-06'];
 
-    //默认配置
+    /**
+     * 默认配置
+     * @type {Object}
+     */
     Class.pt.config = {
         type: 0,
         shade: 0.3,
         fixed: true,
-        move: doms[1],
+        move: doms[1],          //默认title为拖曳元素
         title: '&#x4FE1;&#x606F;',
         offset: 'auto',
         area: 'auto',

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+</head>
+
+<body>
+    <script src="../src/js/lib/jquery.js"></script>
+    <div id="dragtest" style="position:relative;left:180px;width:200px;background: rgba(123,123,123,1.0)">
+        <h1>吔屎了</h1>
+        <p>this is a test</p>
+    </div>
+    <script>
+    //方便doc的mousemove回调函数判断当前是否是拖曳过程
+    var dragstart = false;
+    var layero = $('#dragtest');
+    var dict = {};
+    var moveElem = $('#dragtest > h1');
+    moveElem.on('mousedown', function(e) {
+        e.preventDefault();
+        dict.moveStart = true;
+        dict.offset = [
+            e.clientX - parseFloat(layero.css('left')), e.clientY - parseFloat(layero.css('top'))
+        ];
+    })
+    $(document).on('mousemove', function(e) {
+        if (dict.moveStart) {
+            var X = e.clientX - dict.offset[0];
+            var Y = e.clientY - dict.offset[1];
+            layero.css({
+                left: X,
+                top: Y
+            });
+        }
+    }).on('mouseup', function() {
+        if (dict.moveStart) {
+            delete dict.moveStart;
+        }
+    });
+    </script>
+</body>
+
+</html>
