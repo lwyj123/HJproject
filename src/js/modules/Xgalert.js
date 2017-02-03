@@ -113,7 +113,7 @@
         type: 0,
         shade: 0.3,
         fixed: true,
-        move: doms[1],          //默认title为拖曳元素
+        move: doms[1], //默认title为拖曳元素
         title: '&#x4FE1;&#x606F;',
         offset: 'auto',
         area: 'auto',
@@ -246,8 +246,7 @@
         }
         switch (config.type) {
 
-            default:
-                if (config.area[1] === '') {
+            default: if (config.area[1] === '') {
                     if (config.fixed && area[1] >= win.height()) {
                         area[1] = win.height();
                         autoElemHeight('.' + doms[5]);
@@ -255,12 +254,15 @@
                 } else {
                     autoElemHeight('.' + doms[5]);
                 }
-                break;
+            break;
         }
         return that;
     };
 
-    //计算坐标
+    /**
+     * 计算坐标并设置偏移
+     * @return {undefined}   无
+     */
     Class.pt.offset = function() {
         var that = this,
             config = that.config,
@@ -275,41 +277,15 @@
             that.offsetLeft = config.offset[1] || that.offsetLeft;
         } else if (config.offset !== 'auto') {
 
-            if (config.offset === 't') { //上
-                that.offsetTop = 0;
-            } else if (config.offset === 'r') { //右
-                that.offsetLeft = win.width() - area[0];
-            } else if (config.offset === 'b') { //下
-                that.offsetTop = win.height() - area[1];
-            } else if (config.offset === 'l') { //左
-                that.offsetLeft = 0;
-            } else if (config.offset === 'lt') { //左上角
-                that.offsetTop = 0;
-                that.offsetLeft = 0;
-            } else if (config.offset === 'lb') { //左下角
-                that.offsetTop = win.height() - area[1];
-                that.offsetLeft = 0;
-            } else if (config.offset === 'rt') { //右上角
-                that.offsetTop = 0;
-                that.offsetLeft = win.width() - area[0];
-            } else if (config.offset === 'rb') { //右下角
-                that.offsetTop = win.height() - area[1];
-                that.offsetLeft = win.width() - area[0];
-            } else {
-                that.offsetTop = config.offset;
-            }
-
+            that.offsetTop = config.offset;
         }
 
-        if (!config.fixed) {
-            that.offsetTop = /%$/.test(that.offsetTop) ?
-                win.height() * parseFloat(that.offsetTop) / 100 : parseFloat(that.offsetTop);
-            that.offsetLeft = /%$/.test(that.offsetLeft) ?
-                win.width() * parseFloat(that.offsetLeft) / 100 : parseFloat(that.offsetLeft);
-            that.offsetTop += win.scrollTop();
-            that.offsetLeft += win.scrollLeft();
-        }
-
+        that.offsetTop = /%$/.test(that.offsetTop) ?
+            win.height() * parseFloat(that.offsetTop) / 100 : parseFloat(that.offsetTop);
+        that.offsetLeft = /%$/.test(that.offsetLeft) ?
+            win.width() * parseFloat(that.offsetLeft) / 100 : parseFloat(that.offsetLeft);
+        that.offsetTop += win.scrollTop();
+        that.offsetLeft += win.scrollLeft();
 
         layero.css({ top: that.offsetTop, left: that.offsetLeft });
     };
