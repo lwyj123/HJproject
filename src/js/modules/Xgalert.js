@@ -88,34 +88,6 @@
             return this;
         },
 
-        //各种快捷引用
-        msg: function(content, options, end) { //最常用提示层
-            var type = typeof options === 'function',
-                rskin = ready.config.skin;
-            var skin = (rskin ? rskin + ' ' + rskin + '-msg' : '') || 'layui-layer-msg';
-            var anim = doms.anim.length - 1;
-            if (type) end = options;
-            return layer.open($.extend({
-                content: content,
-                time: 3000,
-                shade: false,
-                skin: skin,
-                title: false,
-                closeBtn: false,
-                btn: false,
-                resize: false,
-                end: end
-            }, (type && !ready.config.skin) ? {
-                skin: skin + ' layui-layer-hui',
-                anim: anim
-            } : function() {
-                options = options || {};
-                if (options.icon === -1 || options.icon === undefined && !ready.config.skin) {
-                    options.skin = skin + ' ' + (options.skin || 'layui-layer-hui');
-                }
-                return options;
-            }()));
-        },
     };
 
     var Class = function(setings) {
@@ -195,7 +167,7 @@
 
     /**
      * 创建窗口骨架
-     * @return {[type]} [description]
+     * @return {undefined} 无
      */
     Class.pt.creat = function() {
         var that = this,
@@ -213,56 +185,40 @@
 
         //依据情况初始化（比如关闭其他弹出层）
         switch (config.type) {
-            case 0:
-                config.btn = ('btn' in config) ? config.btn : ready.btn[0];
-                layer.closeAll('dialog');
-                break;
-            case 2:
-                delete config.title;
-                delete config.closeBtn;
-                config.icon === -1 && (config.icon === 0);
-                layer.closeAll('loading');
-                break;
+            // case 0:
+            //     config.btn = ('btn' in config) ? config.btn : ready.btn[0];
+            //     layer.closeAll('dialog');
+            //     break;
         }
 
         //建立容器
         that.vessel(conType, function(html, titleHTML, moveElem) {
             body.append(html[0]);
-            conType ? function() {
-                (config.type == 2 || config.type == 4) ? function() {
-                    $('body').append(html[1]);
-                }() : function() {
-                    if (!content.parents('.' + doms[0])[0]) {
-                        content.data('display', content.css('display')).show().addClass('layui-layer-wrap').wrap(html[1]);
-                        $('#' + doms[0] + times).find('.' + doms[5]).before(titleHTML);
-                    }
-                }();
-            }() : body.append(html[1]);
+            body.append(html[1]);
             $('.layui-layer-move')[0] || body.append(ready.moveElem = moveElem);
             /**
              * layero是弹出窗的jquery对象
              * @type {object}
              */
             that.layero = $('#' + doms[0] + times);
-            config.scrollbar || doms.html.css('overflow', 'hidden').attr('layer-full', times);
+
+            //设置溢出部分隐藏(可以考虑加滚动条)
+            doms.html.css('overflow', 'hidden').attr('layer-full', times);
         }).auto(times);
 
 
         //坐标自适应浏览器窗口尺寸
         that.offset();
-        if (config.fixed) {
-            win.on('resize', function() {
-                that.offset();
-                (/^\d+%$/.test(config.area[0]) || /^\d+%$/.test(config.area[1])) && that.auto(times);
-            });
-        }
 
+        //如果设置的持续时间则添加计时器
         config.time <= 0 || setTimeout(function() {
             layer.close(that.index)
         }, config.time);
+
+        //添加move和一些回调事件
         that.move().callback();
 
-        //为兼容jQuery3.0的css动画影响元素尺寸计算
+        //为兼容jQuery3.0的css动画影响元素尺寸计算？？
         if (doms.anim[config.anim]) {
             that.layero.addClass(doms.anim[config.anim]).data('anim', true);
         };
@@ -354,7 +310,10 @@
         layero.css({ top: that.offsetTop, left: that.offsetLeft });
     };
 
-    //拖拽层
+    /**
+     * move事件绑定，包括拖曳和调整大小
+     * @return {Object} 返回实例对象
+     */
     Class.pt.move = function() {
         var that = this,
             config = that.config,
@@ -447,16 +406,19 @@
         return that;
     };
 
+    /**
+     * 执行设定的回调函数(success等)
+     * @return {undefined} 无返回值
+     */
     Class.pt.callback = function() {
         var that = this,
             layero = that.layero,
             config = that.config;
-        that.openLayer();
         if (config.success) {
             config.success(layero, that.index);
         }
 
-        //按钮
+        //对按钮添加点击事件
         layero.find('.' + doms[6]).children('a').on('click', function() {
             var index = $(this).index();
             if (index === 0) {
@@ -473,7 +435,10 @@
             }
         });
 
-        //取消
+        /**
+         * 取消时执行回掉函数
+         * @return {undefined}
+         */
         function cancel() {
             var close = config.cancel && config.cancel(that.index, layero);
             close === false || layer.close(that.index);
@@ -511,29 +476,18 @@
         config.end && (ready.end[that.index] = config.end);
     };
 
-    //需依赖原型的对外方法
-    Class.pt.openLayer = function() {
-        var that = this;
-
-        //置顶当前窗口
-        layer.zIndex = that.config.zIndex;
-        layer.setTop = function(layero) {
-            var setZindex = function() {
-                layer.zIndex++;
-                layero.css('z-index', layer.zIndex + 1);
-            };
-            layer.zIndex = parseInt(layero[0].style.zIndex);
-            layero.on('mousedown', setZindex);
-            return layer.zIndex;
-        };
-    };
-
 
     /** 内置成员 */
 
     window.layer = layer;
 
-    //设定层的样式
+    /**
+     * 设定制定层的样式，index必须
+     * @param  {int} index   层的index
+     * @param  {Object} options 指定样式
+     * @param  {bool} limit   是否做出限制，可选
+     * @return {[type]}         [description]
+     */
     layer.style = function(index, options, limit) {
         var layero = $('#' + doms[0] + index),
             contElem = layero.find('.layui-layer-content'),
@@ -558,15 +512,9 @@
         layero.css(options);
         btnHeight = layero.find('.' + doms[6]).outerHeight();
 
-        if (type === ready.type[2]) {
-            layero.find('iframe').css({
-                height: parseFloat(options.height) - titHeight - btnHeight
-            });
-        } else {
-            contElem.css({
-                height: parseFloat(options.height) - titHeight - btnHeight - parseFloat(contElem.css('padding-top')) - parseFloat(contElem.css('padding-bottom'))
-            })
-        }
+        contElem.css({
+            height: parseFloat(options.height) - titHeight - btnHeight - parseFloat(contElem.css('padding-top')) - parseFloat(contElem.css('padding-bottom'))
+        })
     };
 
 
