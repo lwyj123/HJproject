@@ -236,7 +236,7 @@
         var titHeight = layero.find(doms[1]).outerHeight() || 0;
         var btnHeight = layero.find('.' + doms[6]).outerHeight() || 0;
 
-        function setHeight(elem) {
+        function autoElemHeight(elem) {
             elem = layero.find(elem);
             elem.height(area[1] - titHeight - btnHeight - 2 * (parseFloat(elem.css('padding')) | 0));
         }
@@ -246,10 +246,10 @@
                 if (config.area[1] === '') {
                     if (config.fixed && area[1] >= win.height()) {
                         area[1] = win.height();
-                        setHeight('.' + doms[5]);
+                        autoElemHeight('.' + doms[5]);
                     }
                 } else {
-                    setHeight('.' + doms[5]);
+                    autoElemHeight('.' + doms[5]);
                 }
                 break;
         }
