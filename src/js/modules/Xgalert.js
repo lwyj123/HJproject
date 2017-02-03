@@ -224,7 +224,11 @@
         };
     };
 
-    //自适应
+    /**
+     * 自适应
+     * @param  {int} index     自适应对象的index
+     * @return {Object}        返回实例对象本身
+     */
     Class.pt.auto = function(index) {
         var that = this,
             config = that.config,
