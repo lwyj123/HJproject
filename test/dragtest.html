@@ -23,7 +23,7 @@
         dict.offset = [
             e.clientX - parseFloat(layero.css('left')), e.clientY - parseFloat(layero.css('top'))
         ];
-    })
+    });
     $(document).on('mousemove', function(e) {
         if (dict.moveStart) {
             var X = e.clientX - dict.offset[0];
