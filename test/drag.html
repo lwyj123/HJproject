@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>drag层</title>
+</head>
+<body>
+
+	<div id="dragTest" style="width:300px;height:200px;background:red;position:relative;top: 300px;left: 400px">
+		<h1>在js文件中引用jquery</h1>
+		<p>感觉很迷，迷之没有$().on()函数和$().css()函数</p>
+	</div>
+    <script src="../src/js/lib/jquery.js"></script>
+    <script src="../src/js/modules/LFRelize.js"></script>
+	<script type="text/javascript">
+		setdragable('dragTest');
+/*		var dict = {};
+		
+		var dragEle = $('#dragTest');
+		dragEle.isPressDown = false;
+		dragEle.on("onmousedown",function(e){
+			e.preventDefault();
+			dict.x = e.clientX - parseFloat(dragEle.css('left'));
+			dict.y = e.clientY - parseFloat(dragEle.css('top'));
+			dragEle.isPressDown = true;
+		})
+
+		$(document).on("onmousemove",function(e){
+			if(isPressDown){
+				var dx = e.clientX - dict.x;
+				var dy = e.clientY - dict.y;
+				dragEle.css({
+					x:dx,
+					y:dy
+				});
+			}
+		}).on("onmouseup",function(e){
+			if(dragEle.isPressDown)
+				delete dragEle.isPressDown;
+		});*/
+	</script>
+</body>
+</html>
