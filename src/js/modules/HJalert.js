@@ -81,11 +81,10 @@
 
     /**
      * 容器，用来设定弹出框的模板
-     * @param  {[type]}   conType  [description]
      * @param  {Function} callback 一个函数，输入3个参数，第一个是数组依次存遮罩、主体的string表达，第二个是标题栏的html，第三个是拖曳对象（暂时不理解怎么用的）
      * @return {[type]}            [description]
      */
-    Class.pt.vessel = function(conType, callback) {
+    Class.pt.vessel = function(callback) {
         var that = this,
             times = that.index,
             config = that.config;
