@@ -71,13 +71,12 @@
      * @type {Object}
      */
     Class.pt.config = {
-        move: , //默认title部分为拖曳元素
-        title: '',
-        zIndex: 19891014,
+        move: ,         //拖曳元素，选择器表示,比如-> '.layui-layer-title'
+        title: '',           //title的内容
+        zIndex: 19891014,    
         maxWidth: 360,
-        moveType: 1,
-        resize: true,
-        scrollbar: true, //是否允许浏览器滚动条
+        resize: true,        //右下角是否有resize部分
+
     };
 
     /**
