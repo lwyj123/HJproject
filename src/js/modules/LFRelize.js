@@ -3,50 +3,34 @@
  */
 
 window.setdragable = function(id){
+    
+	var dragEle = $('#'+id);
 
-	var dragEle = $('#'+id)[0];
 
-
-		dragEle.onmousedown = function(e){
-			var oevent = e || event;
-			var dx = oevent.clientX - dragEle.offsetLeft;
-			var dy = oevent.clientY - dragEle.offsetTop;
-
-			document.onmousemove = function(e){
-				var oevent = e || event;
-				dragEle.style.left = oevent.clientX - dx + 'px';
-				dragEle.style.top = oevent.clientY - dy + 'px';
-			};
-
-			document.onmouseup = function(e){
-				document.onmousemove = null;
-				document.onmouseup = null;
-			};
-		};/**/
 
 		//有啥不一样的。。一脸懵逼
 		//求告诉区别？？
-		/*
-		 var dic = {};
+
+		 var dict = {};
 		 dragEle.isPressDown = false;
-		 dragEle.on("onmousedown",function(e){
+		 dragEle.on("mousedown",function(e){
 			e.preventDefault();
 			dict.x = e.clientX - dragEle.css('left');
 			dict.y = e.clientY - dragEle.css('top');
 			dragEle.isPressDown = true;
 		});
 
-		$(document).on("onmousemove",function(e){
-			if(isPressDown){
+		$(document).on("mousemove",function(e){
+			if(dragEle.isPressDown){
 				dragEle.css({
-					x:e.clientX - dict.x,
-					y:e.clientY - dict.y
+					left:e.clientX - dict.x+20,
+					top:e.clientY - dict.y+20
 				});
 			}
-		}).on("onmouseup",function(e){
+		}).on("mouseup",function(e){
 			if(dragEle.isPressDown)
 				delete dragEle.isPressDown;
-		});*/
+		});
 
 }
 		
