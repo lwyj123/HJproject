@@ -28,26 +28,51 @@
     var HJgalert = {
         version: '0.0.2',
         index: 0,
-        path: ready.getPath,
+        jsPath: ready.getPath,
+        cssPath: ready.getPath.replace(/\/js!\//,"/css/"),
 
         /**
-         * 自动链接css文件
-         * @param  {[type]}   href    css文件路径
+         * 自动链接css文件 
+         * @param  {String}   href    css文件夹路径，最后带斜杠/
          * @param  {Function} fn      加载完后的回调函数
-         * @param  {[type]}   cssname css文件名
+         * @param  {String}   cssname css文件名
          * @return {undefined and error}           无，可能报error
          */
         link: function(href, fn, cssname) {
 
             //未设置路径，则不加载css
-            if (!HJgalert.path) return;
+            if (!HJgalert.jsPath) return;
+            var head = $('head')[0],
+            var link = document.createElement('link');
+            if (typeof fn === 'string') cssname = fn;
+            var timeout = 0;
+            var id = 'HJcss-alert';
 
+            link.rel = 'stylesheet';
+            link.href = HJgalert.cssPath + cssname;
+            link.id = id;
             //注意加载使用轮询
+            if (!$('#' + id)[0]) {
+                head.appendChild(link);
+            }
+
+            if (typeof fn !== 'function') return;
+
+            //轮询css是否加载完毕
+            (function poll() {
+                //超时报错
+                if (++timeout > 8 * 1000 / 100) {
+                    return window.console && console.error('HJalert-default.css: Invalid');
+                };
+                $("head > #" + id)[0] ? fn() : setTimeout(poll, 100);
+            }());
 
         },
 
         cssready: function(callback) {
+            var cssname = 'HJalert-default.css';
 
+            HJgalert.link(HJgalert.cssPath, callback, cssname);
 
             return this;
         },
