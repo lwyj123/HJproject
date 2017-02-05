@@ -15,11 +15,11 @@
 
     layer.open({
         type: 1,
-        title: true //显示标题栏
+        title: '我是标题' //显示标题栏
             ,
-        closeBtn: false,
-        area: '300px;',
-        shade: 0.8,
+        closeBtn: true,
+        area: '400px;',
+        shade: 0.3,
         id: 'LAY_layuipro' //设定一个id，防止重复弹出
             ,
         btn: ['火速围观', '残忍拒绝'],
@@ -35,7 +35,7 @@
             });
         },
         moveEnd: function() {
-            alert('move End');
+            //alert('move End');
         }
     });
     </script>
