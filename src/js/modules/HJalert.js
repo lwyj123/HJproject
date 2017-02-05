@@ -89,8 +89,31 @@
             times = that.index,
             config = that.config;
         var zIndex = config.zIndex + times,
-        
+        //最大最小化按钮,暂不考虑
+        //var ismax = config.maxmin //&& (config.type === 1 || config.type === 2);
+        //标题栏支持样式设置
+        var titleHTML = (config.title ? '<div class="HJProject-alert-title" style="' + (titype ? config.title[1] : '') + '">' + (titype ? config.title[0] : config.title) + '</div>' : '');
+        config.zIndex = zIndex;
 
+        callback([
+        	//遮罩
+        	config.shade ? ('<div class="HJProject-alert-shade" id="HJproject-alert-shade' + times + '" times ="' + times + '" style="' + ('z-index:' + (zIndex-1) +'; background-color:'+ (config.shade[1]||'#000') +'; opacity:' + (config.shade[0]||config.shade) +'; filter:alpha(opacity=' + (config.shade[0]*100||config.shade*100 + ');') + '"></div>'):'',
+        	//主体,暂不考虑closeBtn
+        	'<div class="HJproject-alert HJproject-alert-page id="HJproject-alert' + times + '" type="page' + ' "times="' + times + ' " style="z-index: ' + zIndex + '; width:' + config.area[0] + ';height:' + config.area[1] + '">' + titleHTML + '<div id="' + (config.id || '') + '" class="HJproject-alert-content' + '">' + (config.content || '') + '</div>' + '<span class="HJproject-alert-setwin">'/* + function(){
+        		var closebtn = ismax ? '<a class="HJproject-alert-min" href="javascript:;"><cite></cite></a><a class="HJproject-alert-ico HJproject-alert-max" href="javascript:;"></a>':'';
+        		config.closeBtn && (closebtn += '<a class="HJproject-alert-ico ' + 'HJproject-alert-close HJproject-alert-close HJproject-alert-close' + (config.title ? config.closebtn : '1') + '" href="javascript:;"></a>');
+        		return closebtn;
+        	}()*/ + '</span>' + (config.btn ? function(){
+        		var button = '';
+        		typeof config.btn === 'string' && (config.btn = [config.btn]);
+        		for (var i = 0,len = config.btn.length; i < len; i++) {
+        			button += '<a class="HJproject-alert-btn' + '' + i + '">' + config.btn[i] + '</a>' ;
+        		}
+        		//config.btnAlign???
+        		return '<div class="HJproject-alert-btn HJproject-alert-btn-' + (config.btnAlian || '') + '">' + button + '</div>';
+        	}() : '')
+        	+ (config.resize ? '<span class="HJproject-alert-resize"></span>' : '') + '</div>'
+        	],titleHTML,$('<div class="HJProject-alert-move></div>'));
         return that;
     };
 
@@ -114,7 +137,15 @@
         }
 
         //调用vessel建立容器
-        //
+        that.vessel(function(html,titleHTML,moveElem){
+        	body.append(html[0]);
+       		body.append(html[1]);
+        	$('.HJproject-alert-move')[0] || body.append(ready.moveElem = moveElem);
+        	that.layero = $('#HJproject-alert' + times);
+        	//设置部分隐藏
+       	 	doms.html.css('overflow','hidden').attr('layer-full',times);
+        }).auto(times);
+        
         //调用auto
 
 
