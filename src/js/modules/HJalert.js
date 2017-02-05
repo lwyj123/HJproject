@@ -137,14 +137,7 @@
         }
 
         //调用vessel建立容器
-        that.vessel(function(html,titleHTML,moveElem){
-        	body.append(html[0]);
-       		body.append(html[1]);
-        	$('.HJproject-alert-move')[0] || body.append(ready.moveElem = moveElem);
-        	that.layero = $('#HJproject-alert' + times);
-        	//设置部分隐藏
-       	 	doms.html.css('overflow','hidden').attr('layer-full',times);
-        }).auto(times);
+
         
         //调用auto
 
