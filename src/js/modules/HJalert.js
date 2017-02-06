@@ -24,6 +24,10 @@
         minIndex: 0,
     };
 
+
+    //用来存moveElem之类的
+    var HJglobal = {};
+
     //默认内置方法。
     var HJgalert = {
         version: '0.0.2',
@@ -96,12 +100,12 @@
      * @type {Object}
      */
     Class.pt.config = {
-        move: '',         //拖曳元素，选择器表示,比如-> '.layui-layer-title'
+        move: '.HJProject-alert-move',         //拖曳元素，选择器表示,比如-> '.layui-layer-title'
         title: '',           //title的内容
         zIndex: 19891014,    
         maxWidth: 360,
         resize: true,        //右下角是否有resize部分
-
+        shadeClose: true,    //默认点遮罩层会关闭窗口
     };
 
     /**
@@ -163,17 +167,26 @@
         }
 
         //调用vessel建立容器
+        that.vessel(function(html, titleHTML, moveElem) {
+            body.append(html[0]);
+            body.append(html[1]);
 
+            if(!$('.HJproject-alert-move')[0]) {
+                body.append(HJglobal.moveElem = moveElem);        
+            }
+
+            that.alertObject = $('#' + doms[0] + times);
+        });
         
         //调用auto
-
+        that.auto(times);
 
 
         //坐标自适应浏览器窗口尺寸
-
+        that.offset();
 
         //添加move和一些回调事件
-        
+        that.move().callback();
     };
 
     /**
@@ -320,11 +333,49 @@
      * @return {Object} 返回实例对象
      */
     Class.pt.move = function() {
-        var that = this,
-            config = that.config,
-            _DOC = $(document),
-            alertObject = that.alertObject,
-            dict = {};
+        var that = this;
+        var config = that.config;
+        var _DOC = $(document);
+        var alertObject = that.alertObject;
+        var moveElem = alertObject.find(config.move);
+        var dict = {};
+
+        if (config.move) {
+            moveElem.css('cursor', 'move');
+        }
+        moveElem.on('mousedown', function(e) {
+            e.preventDefault();
+            if (config.move) {
+                dict.moveStart = true;
+                dict.offset = [
+                    e.clientX - parseFloat(alertObject.css('left')), e.clientY - parseFloat(alertObject.css('top'))
+                ];
+                HJglobal.moveElem.css('cursor', 'move').show();
+            }
+        });
+
+        _DOC.on('mousemove', function(e) {
+
+            //拖拽移动
+            if (dict.moveStart) {
+                var X = e.clientX - dict.offset[0];
+                var Y = e.clientY - dict.offset[1];
+
+                e.preventDefault();
+
+                alertObject.css({
+                    left: X,
+                    top: Y
+                });
+            }
+        }).on('mouseup', function(e) {
+            if (dict.moveStart) {
+                delete dict.moveStart;
+                HJglobal.moveElem.hide();
+                config.moveEnd && config.moveEnd(alertObject);
+            }
+        });
+
 
         return that;
     };
@@ -340,17 +391,21 @@
 
 
         /**
-         * 取消时执行回掉函数，比如点右上角×的时候
+         * 取消时执行回掉函数，比如点右上角×的时候（未完成）
          */
 
 
         //点遮罩关闭
+        if (config.shadeClose) {
+            $('#HJproject-alert-shade' + that.index).on('click', function() {
+                layer.close(that.index);
+            });
+        }
+
+        //最小化 （未完成）
 
 
-        //最小化
-
-
-        //全屏/还原
+        //全屏/还原 （未完成）
 
 
     };
@@ -368,12 +423,17 @@
      * @return {[type]}         [description]
      */
     HJalert.style = function(index, options, limit) {
-        var alertObject = $('#' + doms[0] + index);
-
+        var alertObject = $('#HJproject-alert' + index);
+        var contElem = alertObject.find('.HJproject-alert-content');
+        var titHeight = alertObject.find('.HJproject-alert-title').outerHeight() || 0;
+        var btnHeight = alertObject.find('.HJproject-alert-btn').outerHeight() || 0;
 
         //如果设置了宽高，是否限制最小是多少？
 
+        alertObject.css(options);
 
+        //这里应该调用自适应的代码，这一块是后面重点
+        //alertObject.auto();
     };
 
 
@@ -383,19 +443,26 @@
             type = alertObject.attr('type');
         if (!alertObject[0]) return;
         var WRAP = 'HJproject-alert-wrap';
+        var remove = function() {
+            layero[0].innerHTML = '';
+            layero.remove();
+            //可以考虑加入关闭的回调事件
+        };
 
+        //删除非对象内容的遮罩
+        $('#HJproject-alert-shade' + index).remove();
     };
 
     //关闭所有层
     HJalert.closeAll = function() {
-        $.each($('.' + doms[0]), function() {
+        $.each($('.HJproject-alert'), function() {
             var othis = $(this);
             HJalert.close(othis.attr('times'));
         });
     };
 
     //主入口
-    ready.run = function(_$) {
+    HJglobal.run = function(_$) {
         $ = _$;
         win = $(window);
         doms.html = $('html');
@@ -406,27 +473,12 @@
     };
 
     /**
-     * 加载方式，暂时先保留吧留着以后
+     * 加载方式，最土的一种，后面要改。
      * @param  {[type]} exports) {                        HJalert.path [description]
      * @return {[type]}          [description]
      */
-    window.layui && layui.define ? (
-        HJalert.cssready(), layui.define('jquery', function(exports) { //layui加载
-            HJalert.path = layui.cache.dir;
-            ready.run(layui.jquery);
+    HJglobal.run(window.jQuery);
+    HJalert.cssready();
 
-            //暴露模块
-            window.layer = layer;
-            exports('layer', layer);
-        })
-    ) : (
-        typeof define === 'function' ? define(['jquery'], function() { //requirejs加载
-            ready.run(window.jQuery);
-            return layer;
-        }) : function() { //普通script标签加载
-            ready.run(window.jQuery);
-            HJalert.cssready();
-        }()
-    );
 
 }(window);
