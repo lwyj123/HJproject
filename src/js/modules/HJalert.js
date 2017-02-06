@@ -42,7 +42,7 @@
 
             //未设置路径，则不加载css
             if (!HJgalert.jsPath) return;
-            var head = $('head')[0],
+            var head = $('head')[0];
             var link = document.createElement('link');
             if (typeof fn === 'string') cssname = fn;
             var timeout = 0;
@@ -96,7 +96,7 @@
      * @type {Object}
      */
     Class.pt.config = {
-        move: ,         //拖曳元素，选择器表示,比如-> '.layui-layer-title'
+        move: '',         //拖曳元素，选择器表示,比如-> '.layui-layer-title'
         title: '',           //title的内容
         zIndex: 19891014,    
         maxWidth: 360,
@@ -114,6 +114,7 @@
             times = that.index,
             config = that.config;
         var zIndex = config.zIndex + times,
+        	titype = typeof config.title === 'object';
         //最大最小化按钮,暂不考虑
         //var ismax = config.maxmin //&& (config.type === 1 || config.type === 2);
         //标题栏支持样式设置
@@ -122,7 +123,7 @@
 
         callback([
         	//遮罩
-        	config.shade ? ('<div class="HJProject-alert-shade" id="HJproject-alert-shade' + times + '" times ="' + times + '" style="' + ('z-index:' + (zIndex-1) +'; background-color:'+ (config.shade[1]||'#000') +'; opacity:' + (config.shade[0]||config.shade) +'; filter:alpha(opacity=' + (config.shade[0]*100||config.shade*100 + ');') + '"></div>'):'',
+        	config.shade ? ('<div class="HJProject-alert-shade" id="HJproject-alert-shade' + times + '" times ="' + times + '" style="' + ('z-index:' + (zIndex-1) +'; background-color:'+ (config.shade[1]||'#000') +'; opacity:' + (config.shade[0]||config.shade) +'; filter:alpha(opacity=' + (config.shade[0]*100||config.shade*100) + ');') + '"></div>'):'',
         	//主体,暂不考虑closeBtn
         	'<div class="HJproject-alert HJproject-alert-page id="HJproject-alert' + times + '" type="page' + ' "times="' + times + ' " style="z-index: ' + zIndex + '; width:' + config.area[0] + ';height:' + config.area[1] + '">' + titleHTML + '<div id="' + (config.id || '') + '" class="HJproject-alert-content' + '">' + (config.content || '') + '</div>' + '<span class="HJproject-alert-setwin">'/* + function(){
         		var closebtn = ismax ? '<a class="HJproject-alert-min" href="javascript:;"><cite></cite></a><a class="HJproject-alert-ico HJproject-alert-max" href="javascript:;"></a>':'';
@@ -157,7 +158,7 @@
         switch (config.type) {
             // case 0:
             //     config.btn = ('btn' in config) ? config.btn : ready.btn[0];
-            //     layer.closeAll('dialog');
+            //     HJalert.closeAll('dialog');
             //     break;
         }
 
@@ -185,6 +186,41 @@
             config = that.config,
             alertObject = $('#' + doms[0] + index);
 
+        //自适应宽度,没设置宽度默认最大宽度
+        if(config.area[0] === '' && config.maxWidth > 0){
+        	alertObject.outerWidth() > config.maxWidth && alertObject.width(config.maxWidth);
+        }
+        //获取实际实体innerwidth
+        var area = [alertObject.innerWidth(),alertObject.innerHeight()];
+        //获取title,button的outerWidth
+        var titHeight = alertObject.find('.HJproject-alert-title').outerHeight() || 0;
+        var btnHeight = alertObject.find('.HJproject-alert-btn').outerHeight() || 0;
+        //自适应高度,将空余部分设置为content高度
+        function autoElemHeight(elem){
+        	elem = alertObject.find(elem);
+        	elem.height(area[1] - titHeight - btnHeight - 2*(parseFloat(elem.css('padding')) | 0));
+        }
+        //如果未设置高度，并且实体高度过界，则进行自适应处理
+        if(config.area[1] === ''){
+        	if(area[1] > = win.height()){
+        		area[1] = win.height();
+        		autoElemHeight('.HJproject-alert-content');
+        	}
+        }else{
+        	//设置高度后自适应处理
+        	autoElemHeight('.HJproject-alert-content');
+        }
+        /*switch(config.type){
+        	default: if (config.area[1] === ''){
+        		if(area[1] >= win.height()){
+        			area[1] = win.height();
+        			autoElemHeight('.HJproject-alert-content');
+        		}
+        	}else{
+        			autoElemHeight('.HJproject-alert-content');
+        		}
+        	break;
+        }*/
         return that;
     };
 
@@ -196,8 +232,86 @@
     Class.pt.offset = function() {
         var that = this,
             config = that.config,
+            //注意这里需要获取弹层对象
             alertObject = that.alertObject;
+        //获取弹层外宽（包括border)
         var area = [alertObject.outerWidth(), alertObject.outerHeight()];
+        var type = typeof config.offset === 'object';
+        //偏移类型
+        var offsetType = ['t','r','b','l','lt','lb','rt','rb'];
+
+        //处理offset值，return float型
+      	function dealOffset(offset,des){
+      		var rt = offset;
+        	switch(des){
+        		case 't'；
+        			rt = /%$/.test(offset)?win.height()*parseFloat(offset)/100 : parseFloat(offset);
+        			break;
+        		case 'l'：
+        			rt = /%$/.test(offset)?win.width()*parseFloat(offset)/100 : parseFloat(offset);
+        			break;
+        		default:
+        			rt = parseFloat(offset);
+        	}
+        	return rt;
+        }
+
+        //获取偏移量
+        that.offsetTop = (win.height() - area[1]) / 2;
+        that.offsetLeft = (win.width() - area[0]) / 2;
+
+        //根据传入参数设置偏移坐标
+        if(type){
+        	that.offsetTop = config.offset[0];
+        	that.offsetLeft = config.offset[1] || that.offsetLeft;
+        }else if(config.offset !== 'auto'){
+        	//对每种偏移类型进行处理
+        	switch(config.offset){
+        		case offsetType[0]:
+        			that.offsetTop = 0;
+        			break;
+        		case offsetType[1]:
+        			that.offsetLeft = win.width() - area[0];
+        			break;
+        		case offsetType[2]:
+        			that.offsetTop = win.height() - area[1];
+        			break;
+        		case offsetType[3]:
+        			that.offsetLeft = 0;
+        			break;
+        		case offsetType[4]:
+        			that.offsetTop = 0;
+        			that.offsetLeft = 0;
+        			break;
+        		case offsetType[5]:
+        			that.offsetLeft = 0;
+        			that.offsetTop = win.height() - area[1];
+        			break;
+        		case offsetType[6]:
+        			that.offsetTop = 0;
+        			that.offsetLeft = win.width() - area[0];
+        			break;
+        		case offsetType[7]:
+        			that.offsetLeft = win.width() - area[0];
+        			that.offsetTop = win.height() - area[1];
+        			break;
+        		default:
+        			//只定义top坐标，水平居中
+        			that.offsetTop = config.offset;
+        	}
+        }else{
+        	//默认不固定弹层，offset水平垂直居中
+        	that.offsetTop = dealOffset(that.offsetTop,'t');
+        	that.offsetLeft = dealOffset(that.offsetLeft,'l');
+        	that.offsetLeft += win.scrollLeft();
+        	that.offsetTop += win.scrollTop();
+        }
+
+        //设置css样式
+        alertObject.css({
+        	top: that.offsetTop,
+        	left: that.offsetLeft
+        });
 
     };
 
@@ -254,7 +368,7 @@
      * @return {[type]}         [description]
      */
     HJalert.style = function(index, options, limit) {
-        var alertObject = $('#' + doms[0] + index),
+        var alertObject = $('#' + doms[0] + index);
 
 
         //如果设置了宽高，是否限制最小是多少？
@@ -264,19 +378,19 @@
 
 
     //关闭指定index的窗口
-    layer.close = function(index) {
+    HJalert.close = function(index) {
         var alertObject = $('#' + doms[0] + index),
-            type = alertObject.attr('type'),
+            type = alertObject.attr('type');
         if (!alertObject[0]) return;
-        var WRAP = 'HJproject-alert-wrap',
+        var WRAP = 'HJproject-alert-wrap';
 
     };
 
     //关闭所有层
-    layer.closeAll = function() {
+    HJalert.closeAll = function() {
         $.each($('.' + doms[0]), function() {
             var othis = $(this);
-            layer.close(othis.attr('times'));
+            HJalert.close(othis.attr('times'));
         });
     };
 
@@ -285,7 +399,7 @@
         $ = _$;
         win = $(window);
         doms.html = $('html');
-        layer.open = function(deliver) {
+        HJalert.open = function(deliver) {
             var o = new Class(deliver);
             return o.index;
         };
@@ -293,12 +407,12 @@
 
     /**
      * 加载方式，暂时先保留吧留着以后
-     * @param  {[type]} exports) {                        layer.path [description]
+     * @param  {[type]} exports) {                        HJalert.path [description]
      * @return {[type]}          [description]
      */
     window.layui && layui.define ? (
-        layer.cssready(), layui.define('jquery', function(exports) { //layui加载
-            layer.path = layui.cache.dir;
+        HJalert.cssready(), layui.define('jquery', function(exports) { //layui加载
+            HJalert.path = layui.cache.dir;
             ready.run(layui.jquery);
 
             //暴露模块
@@ -311,7 +425,7 @@
             return layer;
         }) : function() { //普通script标签加载
             ready.run(window.jQuery);
-            layer.cssready();
+            HJalert.cssready();
         }()
     );
 
