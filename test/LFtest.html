@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>LFTest</title>
+</head>
+<body>
+    <script src="../src/js/lib/jquery.js"></script>
+	<script type="text/javascript">
+		var config = {
+			title:'I\'m Title',
+			id:'test1',
+			btn:['围观','拒绝'], 
+			content:'<div style="padding: 50px; line-height: 22px; background-color: #393D49; color: #fff; font-weight: 300;">你知道吗？亲！<br>layer ≠ layui<br><br>layer只是作为Layui的一个弹层模块，由于其用户基数较大，所以常常会有人以为layui是layerui<br><br>layer虽然已被 Layui 收编为内置的弹层模块，但仍然会作为一个独立组件全力维护、升级。<br><br>我们此后的征途是星辰大海 ^_^</div>',
+			shade:0.8,
+			area:'400px',
+			zIndex:19891014,
+		};
+
+		var o = {};
+		o.config = config;
+
+		o.vessel = function(callback) {
+       		var that = this,
+            	times = 1,
+          	  	config = that.config;
+        	var zIndex = config.zIndex + times,
+        		titype = typeof config.title === 'object';
+        //最大最小化按钮,暂不考虑
+        //var ismax = config.maxmin //&& (config.type === 1 || config.type === 2);
+        //标题栏支持样式设置
+        var titleHTML = (config.title ? '<div class="HJProject-alert-title" style="' + (titype ? config.title[1] : '') + '">' + (titype ? config.title[0] : config.title) + '</div>' : '');
+        config.zIndex = zIndex;
+
+        callback([
+        	//遮罩
+        	config.shade ? ('<div class="HJProject-alert-shade" id="HJproject-alert-shade' + times + '" times ="' + times + '" style="' + ('z-index:' + (zIndex-1) +'; background-color:'+ (config.shade[1]||'#000') +'; opacity:' + (config.shade[0]||config.shade) +'; filter:alpha(opacity=' + (config.shade[0]*100||config.shade*100) + ');') + '"></div>'):'',
+        	//主体,暂不考虑closeBtn
+        	'<div class="HJproject-alert HJproject-alert-page id="HJproject-alert' + times + '" type="page' + ' "times="' + times + ' " style="z-index: ' + zIndex + '; width:' + config.area[0] + ';height:' + config.area[1] + '">' + titleHTML + '<div id="' + (config.id || '') + '" class="HJproject-alert-content' + '">' + (config.content || '') + '</div>' + '<span class="HJproject-alert-setwin">'/* + function(){
+        		var closebtn = ismax ? '<a class="HJproject-alert-min" href="javascript:;"><cite></cite></a><a class="HJproject-alert-ico HJproject-alert-max" href="javascript:;"></a>':'';
+        		config.closeBtn && (closebtn += '<a class="HJproject-alert-ico ' + 'HJproject-alert-close HJproject-alert-close HJproject-alert-close' + (config.title ? config.closebtn : '1') + '" href="javascript:;"></a>');
+        		return closebtn;
+        	}()*/ + '</span>' + (config.btn ? function(){
+        		var button = '';
+        		typeof config.btn === 'string' && (config.btn = [config.btn]);
+        		for (var i = 0,len = config.btn.length; i < len; i++) {
+        			button += '<a class="HJproject-alert-btn' + '' + i + '">' + config.btn[i] + '</a>' ;
+        		}
+        		//config.btnAlign???
+        		return '<div class="HJproject-alert-btn HJproject-alert-btn-' + (config.btnAlian || '') + '">' + button + '</div>';
+        	}() : '')
+        	+ (config.resize ? '<span class="HJproject-alert-resize"></span>' : '') + '</div>'
+        	],titleHTML,$('<div class="HJProject-alert-move></div>'));
+        return that;
+    };
+
+    o.vessel(function(html,title,move){
+			console.log(html);
+			console.log(title);
+	});
+
+	</script>
+</body>
+</html>
