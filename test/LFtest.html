@@ -16,13 +16,26 @@
 			area:'400px',
 			zIndex:19891014,
 		};
+		var defaultConfig = {
+			move: '.HJProject-alert-move',         //拖曳元素，选择器表示,比如-> '.layui-layer-title'
+       	 	title: '',           //title的内容
+        	zIndex: 19891014,    
+        	maxWidth: 360,
+        	resize: true,        //右下角是否有resize部分
+        	shadeClose: true,    //默认点遮罩层会关闭窗口
+        	offset:'auto',
+		}
 
-		var o = {};
-		o.config = config;
+		var win = $(window);
+		function Obj(){
+			this.index = 0;
+			this.index ++ ;
+		}
 
-		o.vessel = function(callback) {
+
+		Obj.prototype.vessel = function(callback) {
        		var that = this,
-            	times = 1,
+            	times = that.index,
           	  	config = that.config;
         	var zIndex = config.zIndex + times,
         		titype = typeof config.title === 'object';
@@ -36,7 +49,7 @@
         	//遮罩
         	config.shade ? ('<div class="HJProject-alert-shade" id="HJproject-alert-shade' + times + '" times ="' + times + '" style="' + ('z-index:' + (zIndex-1) +'; background-color:'+ (config.shade[1]||'#000') +'; opacity:' + (config.shade[0]||config.shade) +'; filter:alpha(opacity=' + (config.shade[0]*100||config.shade*100) + ');') + '"></div>'):'',
         	//主体,暂不考虑closeBtn
-        	'<div class="HJproject-alert HJproject-alert-page id="HJproject-alert' + times + '" type="page' + ' "times="' + times + ' " style="z-index: ' + zIndex + '; width:' + config.area[0] + ';height:' + config.area[1] + '">' + titleHTML + '<div id="' + (config.id || '') + '" class="HJproject-alert-content' + '">' + (config.content || '') + '</div>' + '<span class="HJproject-alert-setwin">'/* + function(){
+        	'<div class="HJproject-alert HJproject-alert-page" id="HJproject-alert' + times + '" type="page' + ' "times="' + times + ' " style="z-index: ' + zIndex + '; width:' + config.area[0] + ';height:' + config.area[1] + '">' + titleHTML + '<div id="' + (config.id || '') + '" class="HJproject-alert-content' + '">' + (config.content || '') + '</div>' + '<span class="HJproject-alert-setwin">'/* + function(){
         		var closebtn = ismax ? '<a class="HJproject-alert-min" href="javascript:;"><cite></cite></a><a class="HJproject-alert-ico HJproject-alert-max" href="javascript:;"></a>':'';
         		config.closeBtn && (closebtn += '<a class="HJproject-alert-ico ' + 'HJproject-alert-close HJproject-alert-close HJproject-alert-close' + (config.title ? config.closebtn : '1') + '" href="javascript:;"></a>');
         		return closebtn;
@@ -54,11 +67,168 @@
         return that;
     };
 
-    o.vessel(function(html,title,move){
-			console.log(html);
-			console.log(title);
-	});
+    Obj.prototype.auto = function(index) {
+        var that = this,
+            config = that.config,
+            alertObject = that.alertObject;
 
+        //自适应宽度,没设置宽度默认最大宽度
+        if(config.area[0] === '' && config.maxWidth > 0){
+        	alertObject.outerWidth() > config.maxWidth && alertObject.width(config.maxWidth);
+        }
+        //获取实际实体innerwidth
+        var area = [alertObject.innerWidth(),alertObject.innerHeight()];
+        //获取title,button的outerWidth
+        var titHeight = alertObject.find('.HJproject-alert-title').outerHeight() || 0;
+        var btnHeight = alertObject.find('.HJproject-alert-btn').outerHeight() || 0;
+        //自适应高度,将空余部分设置为content高度
+        function autoElemHeight(elem){
+        	elem = alertObject.find(elem);
+        	elem.height(area[1] - titHeight - btnHeight - 2*(parseFloat(elem.css('padding')) | 0));
+        }
+        //如果未设置高度，并且实体高度过界，则进行自适应处理
+        if(config.area[1] === ''){
+        	if(area[1] > win.height()){
+        		area[1] = win.height();
+        		autoElemHeight('.HJproject-alert-content');
+        	}
+        }else{
+        	//设置高度后自适应处理
+        	autoElemHeight('.HJproject-alert-content');
+        }
+        /*switch(config.type){
+        	default: if (config.area[1] === ''){
+        		if(area[1] >= win.height()){
+        			area[1] = win.height();
+        			autoElemHeight('.HJproject-alert-content');
+        		}
+        	}else{
+        			autoElemHeight('.HJproject-alert-content');
+        		}
+        	break;
+        }*/
+        return that;
+    };
+
+    /**
+     * 计算坐标并设置偏移(和auto不同这个是对窗口整体而言)
+     * 
+     * @return {undefined}   无
+     */
+    Obj.prototype.offset = function() {
+        var that = this,
+            config = that.config,
+            //注意这里需要获取弹层对象
+            alertObject = that.alertObject;
+        //获取弹层外宽（包括border)
+        var area = [alertObject.outerWidth(), alertObject.outerHeight()];
+        var type = typeof config.offset === 'object';
+        //偏移类型
+        var offsetType = ['t','r','b','l','lt','lb','rt','rb'];
+
+        //处理offset值，return float型
+      	function dealOffset(offset,des){
+      		var rt = offset;
+        	switch(des){
+        		case 't':
+        			rt = /%$/.test(offset)?win.height()*parseFloat(offset)/100 : parseFloat(offset);
+        			break;
+        		case 'l':
+        			rt = /%$/.test(offset)?win.width()*parseFloat(offset)/100 : parseFloat(offset);
+        			break;
+        		default:
+        			rt = parseFloat(offset);
+        	}
+        	return rt;
+        }
+
+        //获取偏移量
+        that.offsetTop = (win.height() - area[1]) / 2;
+        that.offsetLeft = (win.width() - area[0]) / 2;
+
+        //根据传入参数设置偏移坐标
+        if(type){
+        	that.offsetTop = config.offset[0];
+        	that.offsetLeft = config.offset[1] || that.offsetLeft;
+        }else if(config.offset !== 'auto'){
+        	//对每种偏移类型进行处理
+        	switch(config.offset){
+        		case offsetType[0]:
+        			that.offsetTop = 0;
+        			break;
+        		case offsetType[1]:
+        			that.offsetLeft = win.width() - area[0];
+        			break;
+        		case offsetType[2]:
+        			that.offsetTop = win.height() - area[1];
+        			break;
+        		case offsetType[3]:
+        			that.offsetLeft = 0;
+        			break;
+        		case offsetType[4]:
+        			that.offsetTop = 0;
+        			that.offsetLeft = 0;
+        			break;
+        		case offsetType[5]:
+        			that.offsetLeft = 0;
+        			that.offsetTop = win.height() - area[1];
+        			break;
+        		case offsetType[6]:
+        			that.offsetTop = 0;
+        			that.offsetLeft = win.width() - area[0];
+        			break;
+        		case offsetType[7]:
+        			that.offsetLeft = win.width() - area[0];
+        			that.offsetTop = win.height() - area[1];
+        			break;
+        		default:
+        			//只定义top坐标，水平居中
+        			that.offsetTop = config.offset;
+        	}
+        }else{
+        	//默认不固定弹层，offset水平垂直居中
+        	that.offsetTop = dealOffset(that.offsetTop,'t');
+        	that.offsetLeft = dealOffset(that.offsetLeft,'l');
+        	that.offsetLeft += win.scrollLeft();
+        	that.offsetTop += win.scrollTop();
+        }
+
+        //设置css样式
+        alertObject.css({
+        	//默认设置绝对定位，因为没有css文件
+        	position:'absolute',
+        	top: that.offsetTop,
+        	left: that.offsetLeft
+        });
+        console.log(alertObject.css('position'));
+        console.log(alertObject.css('top'));
+        console.log(alertObject.css('left'));
+    };
+
+    //@test
+    function test(config){
+    	var o = new Obj();
+        if (typeof config.area === 'string') {
+            config.area = config.area === 'auto' ? ['', ''] : [config.area, ''];
+        }
+    	o.config = config;
+    	times = o.index;
+    	//Test vessel
+    	o.vessel(function(html,title,moveEle){
+    		console.log(html);
+    		console.log(title);
+    		console.log(moveEle);
+    		$('body').append(html[0]);
+            $('body').append(html[1]);
+    		o.alertObject = $('#HJproject-alert'+ times);
+    	})
+    	//Test Auto
+    	var temp = o.auto(times);
+    	console.log(temp.config.area);
+    	o.offset();
+    }
+    var exConfig = $.extend({},defaultConfig,config);
+    test(exConfig);
 	</script>
 </body>
 </html>

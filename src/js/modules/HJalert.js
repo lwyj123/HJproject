@@ -129,7 +129,7 @@
         	//遮罩
         	config.shade ? ('<div class="HJProject-alert-shade" id="HJproject-alert-shade' + times + '" times ="' + times + '" style="' + ('z-index:' + (zIndex-1) +'; background-color:'+ (config.shade[1]||'#000') +'; opacity:' + (config.shade[0]||config.shade) +'; filter:alpha(opacity=' + (config.shade[0]*100||config.shade*100) + ');') + '"></div>'):'',
         	//主体,暂不考虑closeBtn
-        	'<div class="HJproject-alert HJproject-alert-page id="HJproject-alert' + times + '" type="page' + ' "times="' + times + ' " style="z-index: ' + zIndex + '; width:' + config.area[0] + ';height:' + config.area[1] + '">' + titleHTML + '<div id="' + (config.id || '') + '" class="HJproject-alert-content' + '">' + (config.content || '') + '</div>' + '<span class="HJproject-alert-setwin">'/* + function(){
+        	'<div class="HJproject-alert HJproject-alert-page" id="HJproject-alert' + times + '" type="page' + ' "times="' + times + ' " style="z-index: ' + zIndex + '; width:' + config.area[0] + ';height:' + config.area[1] + '">' + titleHTML + '<div id="' + (config.id || '') + '" class="HJproject-alert-content' + '">' + (config.content || '') + '</div>' + '<span class="HJproject-alert-setwin">'/* + function(){
         		var closebtn = ismax ? '<a class="HJproject-alert-min" href="javascript:;"><cite></cite></a><a class="HJproject-alert-ico HJproject-alert-max" href="javascript:;"></a>':'';
         		config.closeBtn && (closebtn += '<a class="HJproject-alert-ico ' + 'HJproject-alert-close HJproject-alert-close HJproject-alert-close' + (config.title ? config.closebtn : '1') + '" href="javascript:;"></a>');
         		return closebtn;
@@ -157,7 +157,7 @@
             times = that.index,
             body = $('body');
 
-
+        //需要加入对参数的处理，如area处理为数组
         //依据情况初始化（比如关闭其他弹出层）
         switch (config.type) {
             // case 0:
@@ -175,7 +175,7 @@
                 body.append(HJglobal.moveElem = moveElem);        
             }
 
-            that.alertObject = $('#' + doms[0] + times);
+            that.alertObject = $('#HJproject-alert'+ times);
         });
         
         //调用auto
@@ -197,7 +197,8 @@
     Class.pt.auto = function(index) {
         var that = this,
             config = that.config,
-            alertObject = $('#' + doms[0] + index);
+            //获取弹层对象
+            alertObject = that.alertObject;
 
         //自适应宽度,没设置宽度默认最大宽度
         if(config.area[0] === '' && config.maxWidth > 0){
@@ -273,7 +274,7 @@
         that.offsetTop = (win.height() - area[1]) / 2;
         that.offsetLeft = (win.width() - area[0]) / 2;
 
-        //根据传入参数设置偏移坐标
+        //根据传入参数设置偏移坐标,可能情况有三种，默认设置(undefined)=auto,offsetType中任意种情况，坐标对
         if(type){
         	that.offsetTop = config.offset[0];
         	that.offsetLeft = config.offset[1] || that.offsetLeft;
