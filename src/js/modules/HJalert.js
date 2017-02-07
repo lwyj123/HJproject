@@ -29,11 +29,12 @@
     var HJglobal = {};
 
     //默认内置方法。
-    var HJgalert = {
+    var HJalert = {
         version: '0.0.2',
+        moduleName: 'HJalert',
         index: 0,
         jsPath: ready.getPath,
-        cssPath: ready.getPath.replace(/\/js!\//,"/css/"),
+        cssPath: ready.getPath.replace(/\/js\//,"/css/"),
 
         /**
          * 自动链接css文件 
@@ -45,7 +46,7 @@
         link: function(href, fn, cssname) {
 
             //未设置路径，则不加载css
-            if (!HJgalert.jsPath) return;
+            if (!HJalert.jsPath) return;
             var head = $('head')[0];
             var link = document.createElement('link');
             if (typeof fn === 'string') cssname = fn;
@@ -53,7 +54,7 @@
             var id = 'HJcss-alert';
 
             link.rel = 'stylesheet';
-            link.href = HJgalert.cssPath + cssname;
+            link.href = HJalert.cssPath + this.moduleName + '/' + cssname;
             link.id = id;
             //注意加载使用轮询
             if (!$('#' + id)[0]) {
@@ -76,7 +77,7 @@
         cssready: function(callback) {
             var cssname = 'HJalert-default.css';
 
-            HJgalert.link(HJgalert.cssPath, callback, cssname);
+            HJalert.link(HJalert.cssPath, callback, cssname);
 
             return this;
         },
@@ -85,7 +86,7 @@
 
     var Class = function(setings) {
         var that = this;
-        that.index = ++HJgalert.index;
+        that.index = ++HJalert.index;
         that.config = $.extend({}, that.config, setings);
         document.body ? that.creat() : setTimeout(function() {
             that.creat();
@@ -122,12 +123,12 @@
         //最大最小化按钮,暂不考虑
         //var ismax = config.maxmin //&& (config.type === 1 || config.type === 2);
         //标题栏支持样式设置
-        var titleHTML = (config.title ? '<div class="HJProject-alert-title" style="' + (titype ? config.title[1] : '') + '">' + (titype ? config.title[0] : config.title) + '</div>' : '');
+        var titleHTML = (config.title ? '<div class="HJproject-alert-title" style="' + (titype ? config.title[1] : '') + '">' + (titype ? config.title[0] : config.title) + '</div>' : '');
         config.zIndex = zIndex;
 
         callback([
         	//遮罩
-        	config.shade ? ('<div class="HJProject-alert-shade" id="HJproject-alert-shade' + times + '" times ="' + times + '" style="' + ('z-index:' + (zIndex-1) +'; background-color:'+ (config.shade[1]||'#000') +'; opacity:' + (config.shade[0]||config.shade) +'; filter:alpha(opacity=' + (config.shade[0]*100||config.shade*100) + ');') + '"></div>'):'',
+        	config.shade ? ('<div class="HJproject-alert-shade" id="HJproject-alert-shade' + times + '" times ="' + times + '" style="' + ('z-index:' + (zIndex-1) +'; background-color:'+ (config.shade[1]||'#000') +'; opacity:' + (config.shade[0]||config.shade) +'; filter:alpha(opacity=' + (config.shade[0]*100||config.shade*100) + ');') + '"></div>'):'',
         	//主体,暂不考虑closeBtn
         	'<div class="HJproject-alert HJproject-alert-page" id="HJproject-alert' + times + '" type="page' + ' "times="' + times + ' " style="z-index: ' + zIndex + '; width:' + config.area[0] + ';height:' + config.area[1] + '">' + titleHTML + '<div id="' + (config.id || '') + '" class="HJproject-alert-content' + '">' + (config.content || '') + '</div>' + '<span class="HJproject-alert-setwin">'/* + function(){
         		var closebtn = ismax ? '<a class="HJproject-alert-min" href="javascript:;"><cite></cite></a><a class="HJproject-alert-ico HJproject-alert-max" href="javascript:;"></a>':'';
@@ -216,7 +217,7 @@
         }
         //如果未设置高度，并且实体高度过界，则进行自适应处理
         if(config.area[1] === ''){
-        	if(area[1] > = win.height()){
+        	if(area[1] >= win.height()){
         		area[1] = win.height();
         		autoElemHeight('.HJproject-alert-content');
         	}
@@ -258,10 +259,10 @@
       	function dealOffset(offset,des){
       		var rt = offset;
         	switch(des){
-        		case 't'；
+        		case 't':
         			rt = /%$/.test(offset)?win.height()*parseFloat(offset)/100 : parseFloat(offset);
         			break;
-        		case 'l'：
+        		case 'l':
         			rt = /%$/.test(offset)?win.width()*parseFloat(offset)/100 : parseFloat(offset);
         			break;
         		default:
@@ -399,7 +400,7 @@
         //点遮罩关闭
         if (config.shadeClose) {
             $('#HJproject-alert-shade' + that.index).on('click', function() {
-                layer.close(that.index);
+                HJalert.close(that.index);
             });
         }
 
@@ -440,7 +441,7 @@
 
     //关闭指定index的窗口
     HJalert.close = function(index) {
-        var alertObject = $('#' + doms[0] + index),
+        var alertObject = $('#HJproject-alert' + index),
             type = alertObject.attr('type');
         if (!alertObject[0]) return;
         var WRAP = 'HJproject-alert-wrap';
@@ -466,7 +467,6 @@
     HJglobal.run = function(_$) {
         $ = _$;
         win = $(window);
-        doms.html = $('html');
         HJalert.open = function(deliver) {
             var o = new Class(deliver);
             return o.index;
