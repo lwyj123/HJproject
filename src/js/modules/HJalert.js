@@ -159,6 +159,11 @@
             body = $('body');
 
         //需要加入对参数的处理，如area处理为数组
+        if($('#'+config.id)[0])  return;
+
+        if(typeof config.area === 'string'){
+            config.area = config.area === 'auto' ? ['', ''] : [config.area, ''];
+        }
         //依据情况初始化（比如关闭其他弹出层）
         switch (config.type) {
             // case 0:
@@ -391,6 +396,10 @@
             alertObject = that.alertObject,
             config = that.config;
 
+
+        if(config.success){
+            config.success(alertObject,that.index);
+        }
 
         /**
          * 取消时执行回掉函数，比如点右上角×的时候（未完成）
