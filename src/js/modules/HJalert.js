@@ -19,9 +19,6 @@
             if (script.getAttribute('merge')) return;
             return jsPath.substring(0, jsPath.lastIndexOf("/") + 1);
         }(),
-
-        end: {},
-        minIndex: 0,
     };
 
 

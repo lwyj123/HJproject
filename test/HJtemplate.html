@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>layer弹层 - layui</title>
+    <link rel="stylesheet" href="../src/css/layui.css">
+</head>
+
+<body>
+    <script src="../src/js/lib/jquery.js"></script>
+    <script src="../src/js/modules/HJtemplate.js"></script>
+    <script id="demo" type="text/html">
+        <h3>{{ d.title }}</h3>
+        <ul>
+            {{# layui.each(d.list, function(index, item){ }}
+            <li>
+                <span>{{ item.modname }}</span>
+                <span>{{ item.alias }}：</span>
+                <span>{{ item.site || '' }}</span>
+            </li>
+            {{# }); }} {{# if(d.list.length === 0){ }} 无数据 {{# } }}
+        </ul>
+    </script>
+    //第二步：建立视图。用于呈现渲染结果。
+    <div id="view"></div>
+    <script>
+    var data = {
+        "title": "Layui常用模块",
+        "list": [{
+            "modname": "弹层",
+            "alias": "layer",
+            "site": "layer.layui.com"
+        }, {
+            "modname": "表单",
+            "alias": "form"
+        }]
+    }
+    var getTpl = demo.innerHTML;
+    laytpl(getTpl).render(data, function(html) {
+        view.innerHTML = html;
+    });
+    </script>
+</body>
+
+</html>
