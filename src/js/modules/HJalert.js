@@ -455,13 +455,14 @@
         if (!alertObject[0]) return;
         var WRAP = 'HJproject-alert-wrap';
         var remove = function() {
-            layero[0].innerHTML = '';
-            layero.remove();
+            alertObject[0].innerHTML = '';
+            alertObject.remove();
             //可以考虑加入关闭的回调事件
         };
 
         //删除非对象内容的遮罩
         $('#HJproject-alert-shade' + index).remove();
+        remove();
     };
 
     //关闭所有层
