@@ -5,7 +5,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>layer弹层 - layui</title>
-    <link rel="stylesheet" href="../src/css/layui.css">
 </head>
 
 <body>
@@ -14,7 +13,7 @@
     <script id="demo" type="text/html">
         <h3>{{ d.title }}</h3>
         <ul>
-            {{# layui.each(d.list, function(index, item){ }}
+            {{# jQuery.each(d.list, function(index, item){ }}
             <li>
                 <span>{{ item.modname }}</span>
                 <span>{{ item.alias }}：</span>
@@ -38,7 +37,7 @@
         }]
     }
     var getTpl = demo.innerHTML;
-    laytpl(getTpl).render(data, function(html) {
+    HJtemplate(getTpl).render(data, function(html) {
         view.innerHTML = html;
     });
     </script>
