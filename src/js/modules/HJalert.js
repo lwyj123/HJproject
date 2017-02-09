@@ -79,6 +79,52 @@
             return this;
         },
 
+        //提示窗口,提示内容和提示跟随对象，可选参数options
+        tips:function(content,domObj,options){
+            //默认tips窗口配置
+            var tipConfig = $.extend({
+                type : 'dialog',
+                title: '提示',
+                content : [content,domObj],
+                shade : false,
+                maxWidth : 210,
+                resize : false,
+                icon : 0,
+                btn: ['确定'],
+                btn1 : function(index,alertObject){
+                    console.log(index,alertObject);
+                    alertObject.close(index);
+                }
+            },options);
+
+            return HJalert.open(tipConfig);
+        },
+        //信息窗口,内容，自定义配置，回函数
+        msg:function(content,options,callback){
+            //接受四种类型输入：[content],[content,options],[content,options,callback],[content,callback]
+            var type = typeof options === 'function',
+                msgConfig = {
+                    type : 'dialog',
+                    title : '消息',
+                    content : content,
+                    shade : false,
+                    maxWidth : 210,
+                    resize : false,
+                    btn : false,
+            };
+            //由于两个参数输入存在两种情况
+            if(type){
+                callback = options;
+            }else{
+                msgConfig = $.extend(msgConfig,options); 
+            }
+
+            if(callback){
+               callback(); 
+            }
+            
+            return HJalert.open(msgConfig);
+        }
     };
 
     var Class = function(setings) {
@@ -98,12 +144,15 @@
      * @type {Object}
      */
     Class.pt.config = {
+        type : 'page',                          //默认弹出层为页面 传入参数['dialog','page','loading']
         move: '.HJproject-alert-title',         //拖曳元素，选择器表示,比如-> '.layui-layer-title'
         title: '',           //title的内容
         zIndex: 19891014,    
         maxWidth: 360,
         resize: true,        //右下角是否有resize部分
         shadeClose: true,    //默认点遮罩层会关闭窗口
+        area : 'auto',       //默认水平垂直居中
+        icon : -1,           //消息框或者加载框默认为0
     };
 
     /**
@@ -116,7 +165,10 @@
             times = that.index,
             config = that.config;
         var zIndex = config.zIndex + times,
-        	titype = typeof config.title === 'object';
+        	titype = typeof config.title === 'object',
+            //内容类型判定
+            conType = typeof config.content === 'object'
+            
         //最大最小化按钮,暂不考虑
         //var ismax = config.maxmin //&& (config.type === 1 || config.type === 2);
         //标题栏支持样式设置
@@ -127,21 +179,46 @@
         	//遮罩
         	config.shade ? ('<div class="HJproject-alert-shade" id="HJproject-alert-shade' + times + '" times ="' + times + '" style="' + ('z-index:' + (zIndex-1) +'; background-color:'+ (config.shade[1]||'#000') +'; opacity:' + (config.shade[0]||config.shade) +'; filter:alpha(opacity=' + (config.shade[0]*100||config.shade*100) + ');') + '"></div>'):'',
         	//主体,暂不考虑closeBtn
-        	'<div class="HJproject-alert HJproject-alert-page" id="HJproject-alert' + times + '" type="page' + ' "times="' + times + ' " style="z-index: ' + zIndex + '; width:' + config.area[0] + ';height:' + config.area[1] + '">' + titleHTML + '<div id="' + (config.id || '') + '" class="HJproject-alert-content' + '">' + (config.content || '') + '</div>' + '<span class="HJproject-alert-setwin">'/* + function(){
+        	'<div class="HJproject-alert HJproject-alert-' + config.type + '" id="HJproject-alert' + times + '" type="' + config.type + ' "times="' + times + ' conType="' + (conType ? 'object' : 'string') + '" style="z-index: ' + zIndex + '; width:' + config.area[0] + ';height:' + config.area[1] + '">' 
+                //title部分
+                 + (conType && config.type != 'loading' ? '' : titleHTML)
+                 //content部分
+                 + '<div id="' + (config.id || '') + '" class="HJproject-alert-content' + (config.type=='loading' ? 'HJproject-alert-loading' + config.icon:'')+ '">' 
+                 + (config.type == 'dialog' && config.icon != -1 ? '<i class="HJproject-alert-ico HJproject-alert-ico'+config.icon + '"></i>' : '')
+                 + (function(){
+                    var rt = '';
+                    if(config.type === 'page'){
+                        rt += conType ? '' : (config.content || '');
+                    }else if(config.type === 'dialog'){
+                        if(typeof config.content[1] === 'undefined'){
+                            //错误处理（dialog传递参数错误）
+                        }else{
+                            rt += '<div style="position:relative">' + (config.content[0] || '') + '</div>';
+                        }
+                    }
+                    return rt + '</div>';
+                 }())
+                 //+(config.type == 'page' && conType ? '' : (config.content[0] || config.content || '')) + '</div>' 
+                 + '<span class="HJproject-alert-setwin">'
+                 /* + function(){
         		var closebtn = ismax ? '<a class="HJproject-alert-min" href="javascript:;"><cite></cite></a><a class="HJproject-alert-ico HJproject-alert-max" href="javascript:;"></a>':'';
         		config.closeBtn && (closebtn += '<a class="HJproject-alert-ico ' + 'HJproject-alert-close HJproject-alert-close HJproject-alert-close' + (config.title ? config.closebtn : '1') + '" href="javascript:;"></a>');
         		return closebtn;
-        	}()*/ + '</span>' + (config.btn ? function(){
-        		var button = '';
-        		typeof config.btn === 'string' && (config.btn = [config.btn]);
-        		for (var i = 0,len = config.btn.length; i < len; i++) {
-        			button += '<a class="HJproject-alert-btn' + '' + i + '">' + config.btn[i] + '</a>' ;
-        		}
+        	    }()*/ 
+                + '</span>' 
+                //button部分
+                + (config.btn ? function(){
+        		  var button = '';
+        		  typeof config.btn === 'string' && (config.btn = [config.btn]);
+        		  for (var i = 0,len = config.btn.length; i < len; i++) {
+        			 button += '<a class="HJproject-alert-btn' + '' + i + '">' + config.btn[i] + '</a>' ;
+        		  }
         		//config.btnAlign???
-        		return '<div class="HJproject-alert-btn HJproject-alert-btn-' + (config.btnAlian || '') + '">' + button + '</div>';
+        		  return '<div class="HJproject-alert-btn HJproject-alert-btn-' + (config.btnAlian || '') + '">' + button + '</div>';
         	}() : '')
         	+ (config.resize ? '<span class="HJproject-alert-resize"></span>' : '') + '</div>'
         	],titleHTML,$('<div class="HJproject-alert-move></div>'));
+
         return that;
     };
 
