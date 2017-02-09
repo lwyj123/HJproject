@@ -14,7 +14,7 @@
     <script>
 
     HJalert.open({
-        type: 1,
+        type: 'page',
         title: '我是标题' //显示标题栏
             ,
         closeBtn: true,
@@ -37,6 +37,11 @@
         moveEnd: function() {
             //alert('move End');
         }
+    });
+
+    HJalert.tips("hahwo",$('LAY_layuipro'));/**/
+    HJalert.msg("mmp",function(){
+    	alert('this is msg');
     });
     </script>
 </body>
