@@ -98,7 +98,7 @@
      * @type {Object}
      */
     Class.pt.config = {
-        move: '.HJProject-alert-move',         //拖曳元素，选择器表示,比如-> '.layui-layer-title'
+        move: '.HJproject-alert-title',         //拖曳元素，选择器表示,比如-> '.layui-layer-title'
         title: '',           //title的内容
         zIndex: 19891014,    
         maxWidth: 360,
@@ -141,7 +141,7 @@
         		return '<div class="HJproject-alert-btn HJproject-alert-btn-' + (config.btnAlian || '') + '">' + button + '</div>';
         	}() : '')
         	+ (config.resize ? '<span class="HJproject-alert-resize"></span>' : '') + '</div>'
-        	],titleHTML,$('<div class="HJProject-alert-move></div>'));
+        	],titleHTML,$('<div class="HJproject-alert-move></div>'));
         return that;
     };
 
