@@ -1,10 +1,10 @@
 /**
 
- @Name：HJalert v0.0.2 Web弹出层组件
+ @Name：HJalert v0.0.2 Web弹出层组件  2017/2/8
  @Author：梁王 绿豆
  @Site：None
  @License：MIT
- 当前初版是基于layui(贤心)架构及自己的实现
+ 当前初版是基于layui(贤心)架构及自己的实现,实现了最基本的窗口。
  */
 
 ;
@@ -19,9 +19,6 @@
             if (script.getAttribute('merge')) return;
             return jsPath.substring(0, jsPath.lastIndexOf("/") + 1);
         }(),
-
-        end: {},
-        minIndex: 0,
     };
 
 
@@ -219,8 +216,9 @@
         		//config.btnAlign???
         		  return '<div class="HJproject-alert-btn HJproject-alert-btn-' + (config.btnAlian || '') + '">' + button + '</div>';
         	}() : '')
-        	    + (config.resize ? '<span class="HJproject-alert-resize"></span>' : '') + '</div>'
-        	],titleHTML,$('<div class="HJProject-alert-move></div>'));
+        	+ (config.resize ? '<span class="HJproject-alert-resize"></span>' : '') + '</div>'
+        	],titleHTML,$('<div class="HJproject-alert-move></div>'));
+
         return that;
     };
 
@@ -538,6 +536,7 @@
 
         //删除非对象内容的遮罩
         $('#HJproject-alert-shade' + index).remove();
+        remove();
     };
 
     //关闭所有层
