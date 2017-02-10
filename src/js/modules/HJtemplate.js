@@ -144,7 +144,7 @@
         callback(tpl);
     };
 
-    HJtemplate = function(tpl) {
+    HJtemplate.template = function(tpl) {
         if (typeof tpl !== 'string') return tool.error('Template not found');
         return new Tpl(tpl);
     };
@@ -155,9 +155,7 @@
             config[i] = options[i];
         }
     };
-
-    HJtemplate.version = '0.0.2';
-    HJtemplate.moduleName = 'HJtemplate';
+ 
 
     window.HJtemplate = HJtemplate;
 
