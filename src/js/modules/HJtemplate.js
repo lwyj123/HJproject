@@ -155,7 +155,7 @@
             config[i] = options[i];
         }
     };
- 
+  
 
     window.HJtemplate = HJtemplate;
 
