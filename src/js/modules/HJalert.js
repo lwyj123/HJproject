@@ -91,10 +91,13 @@
                 resize : false,
                 icon : 0,
                 btn: ['确定'],
-                btn1 : function(index,alertObject){
-                    console.log(index,alertObject);
-                    alertObject.close(index);
-                }
+                success: function(alertObject,index){
+                    var btn = alertObject.find('.HJproject-alert-btn');
+                    btn.css('text-align','center');
+                    btn.find('.HJproject-alert-btn0').click(function(){
+                        HJalert.close(index);
+                    });
+                },
             },options);
 
             return HJalert.open(tipConfig);
@@ -120,10 +123,13 @@
             }
 
             if(callback){
-               callback(); 
+                HJalert.open(msgConfig);
+               return callback(); 
+            }else{
+                return HJalert.open(msgConfig);
             }
             
-            return HJalert.open(msgConfig);
+            //return HJalert.open(msgConfig);
         }
     };
 
@@ -179,7 +185,7 @@
         	//遮罩
         	config.shade ? ('<div class="HJproject-alert-shade" id="HJproject-alert-shade' + times + '" times ="' + times + '" style="' + ('z-index:' + (zIndex-1) +'; background-color:'+ (config.shade[1]||'#000') +'; opacity:' + (config.shade[0]||config.shade) +'; filter:alpha(opacity=' + (config.shade[0]*100||config.shade*100) + ');') + '"></div>'):'',
         	//主体,暂不考虑closeBtn
-        	'<div class="HJproject-alert HJproject-alert-' + config.type + '" id="HJproject-alert' + times + '" type="' + config.type + ' "times="' + times + ' conType="' + (conType ? 'object' : 'string') + '" style="z-index: ' + zIndex + '; width:' + config.area[0] + ';height:' + config.area[1] + '">' 
+        	'<div class="HJproject-alert HJproject-alert-' + config.type + '" id="HJproject-alert' + times + '" type="' + config.type + ' "times="' + times + '" conType="' + (conType ? 'object' : 'string') + '" style="z-index: ' + zIndex + '; width:' + config.area[0] + ';height:' + config.area[1] + '">' 
                 //title部分
                  + (conType && config.type != 'loading' ? '' : titleHTML)
                  //content部分
@@ -193,7 +199,7 @@
                         if(typeof config.content[1] === 'undefined'){
                             //错误处理（dialog传递参数错误）
                         }else{
-                            rt += '<div style="position:relative">' + (config.content[0] || '') + '</div>';
+                            rt += conType ? '<div style="position:relative;left:5px;top:25px">' + (config.content[0] || '') + '</div>' : (config.content || '');
                         }
                     }
                     return rt + '</div>';
