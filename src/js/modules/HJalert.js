@@ -84,7 +84,6 @@
             //默认tips窗口配置
             var tipConfig = $.extend({
                 type : 'dialog',
-                title: '提示',
                 content : [content,domObj],
                 shade : false,
                 maxWidth : 210,
@@ -113,7 +112,15 @@
                     shade : false,
                     maxWidth : 210,
                     resize : false,
-                    btn : false,
+                    btn : ['确定'],
+                    success : function(alertObject,index){
+                        var btn = alertObject.find('.HJproject-alert-btn');
+                        btn.css('text-align','center');
+                        btn.find('.HJproject-alert-btn0').click(function(){
+                            HJalert.close(index);
+                        });
+                    },
+
             };
             //由于两个参数输入存在两种情况
             if(type){
@@ -186,11 +193,11 @@
         	config.shade ? ('<div class="HJproject-alert-shade" id="HJproject-alert-shade' + times + '" times ="' + times + '" style="' + ('z-index:' + (zIndex-1) +'; background-color:'+ (config.shade[1]||'#000') +'; opacity:' + (config.shade[0]||config.shade) +'; filter:alpha(opacity=' + (config.shade[0]*100||config.shade*100) + ');') + '"></div>'):'',
         	//主体,暂不考虑closeBtn
         	'<div class="HJproject-alert HJproject-alert-' + config.type + '" id="HJproject-alert' + times + '" type="' + config.type + ' "times="' + times + '" conType="' + (conType ? 'object' : 'string') + '" style="z-index: ' + zIndex + '; width:' + config.area[0] + ';height:' + config.area[1] + '">' 
-                //title部分
-                 + (conType && config.type != 'loading' ? '' : titleHTML)
+                //title部分(由于tips加入扩展性受到影响可以优化)
+                 + (conType && config.type != 'loading' ? (config.type == 'dialog' && config.icon != -1 ? '<div style="height:50px;width:260px;text-align:center;"><div class="HJproject-alert-ico HJproject-alert-ico'+config.icon + '"></div></div>' : '') : titleHTML)
                  //content部分
                  + '<div id="' + (config.id || '') + '" class="HJproject-alert-content' + (config.type=='loading' ? 'HJproject-alert-loading' + config.icon:'')+ '">' 
-                 + (config.type == 'dialog' && config.icon != -1 ? '<i class="HJproject-alert-ico HJproject-alert-ico'+config.icon + '"></i>' : '')
+                 //+ (config.type == 'dialog' && config.icon != -1 ? '<i class="HJproject-alert-ico HJproject-alert-ico'+config.icon + '"></i>' : '')
                  + (function(){
                     var rt = '';
                     if(config.type === 'page'){
@@ -199,7 +206,7 @@
                         if(typeof config.content[1] === 'undefined'){
                             //错误处理（dialog传递参数错误）
                         }else{
-                            rt += conType ? '<div style="position:relative;left:5px;top:25px">' + (config.content[0] || '') + '</div>' : (config.content || '');
+                            rt += conType ? '<div style="position:relative;">' + (config.content[0] || '') + '</div>' : (config.content || '');
                         }
                     }
                     return rt + '</div>';
