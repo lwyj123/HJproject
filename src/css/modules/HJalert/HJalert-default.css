@@ -17,7 +17,7 @@ html #HJprojectcss-skinalertcss{display: none; position: absolute; width: 1989px
 .HJproject-alert-content{position:relative;}
 .HJproject-alert-border{border: 1px solid #B2B2B2; border: 1px solid rgba(0,0,0,.1); box-shadow: 1px 1px 5px rgba(0,0,0,.2);}
 .HJproject-alert-load{background:url(loading-1.gif) center center no-repeat;}
-.HJproject-alert-ico{ background:url(icon.png) no-repeat;}
+.HJproject-alert-ico{ background:url(icon.png) no-repeat; width:30px; height:30px;margin: 10px auto;}
 .HJproject-alert-dialog .HJproject-alert-ico,
 .HJproject-alert-setwin a,
 .HJproject-alert-btn a{display:inline-block; *display:inline; *zoom:1; vertical-align:top;}
@@ -89,7 +89,8 @@ html #HJprojectcss-skinalertcss{display: none; position: absolute; width: 1989px
 /* 定制化 */
 .HJproject-alert-dialog{min-width:260px;}
 .HJproject-alert-dialog .HJproject-alert-content{position: relative; padding:20px; line-height:24px; word-break: break-all; overflow:hidden; font-size:14px; overflow-x: hidden; overflow-y:auto;}
-.HJproject-alert-dialog .HJproject-alert-content .HJproject-alert-ico{position:absolute; top:16px; left:15px; _left:-40px; width:30px; height:30px;}
+.HJproject-alert-dialog .HJproject-alert-content .HJproject-alert-ico{width:30px; height:30px;margin: 5px auto;}
+.HJproject-alert-ico{background-position: 0px 0}
 .HJproject-alert-ico1{background-position:-30px 0 }
 .HJproject-alert-ico2{background-position:-60px 0;}
 .HJproject-alert-ico3{background-position:-90px 0;}
