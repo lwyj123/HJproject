@@ -79,6 +79,11 @@
             return this;
         },
 
+        //参数过滤
+        filtPara:function(config){
+
+        },
+
         //提示窗口,提示内容和提示跟随对象，可选参数options
         tips:function(content,domObj,options){
             //默认tips窗口配置
@@ -108,7 +113,7 @@
             var type = typeof options === 'function',
                 msgConfig = {
                     type : 'dialog',
-                    title : '消息',
+                    title : 'message',
                     content : content,
                     shade : false,
                     maxWidth : 210,
@@ -129,6 +134,8 @@
             }else{
                 msgConfig = $.extend(msgConfig,options); 
             }
+            //对配置参数进行过滤,剔除不必要参数（可封装）
+            msgConfig.icon = -1;
 
             if(callback){
                 HJalert.open(msgConfig);
@@ -164,6 +171,7 @@
         zIndex: 19891014,    
         maxWidth: 360,
         resize: true,        //右下角是否有resize部分
+        shade : true,
         shadeClose: true,    //默认点遮罩层会关闭窗口
         area : 'auto',       //默认水平垂直居中
         icon : -1,           //消息框或者加载框默认为0
