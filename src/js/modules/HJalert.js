@@ -84,15 +84,16 @@
             //默认tips窗口配置
             var tipConfig = $.extend({
                 type : 'dialog',
+                title : 'Tips',
                 content : [content,domObj],
                 shade : false,
                 maxWidth : 210,
                 resize : false,
                 icon : 0,
                 btn: ['确定'],
+                btnAlian:'c',
                 success: function(alertObject,index){
                     var btn = alertObject.find('.HJproject-alert-btn');
-                    btn.css('text-align','center');
                     btn.find('.HJproject-alert-btn0').click(function(){
                         HJalert.close(index);
                     });
@@ -113,9 +114,9 @@
                     maxWidth : 210,
                     resize : false,
                     btn : ['确定'],
+                    btnAlian:'c',
                     success : function(alertObject,index){
                         var btn = alertObject.find('.HJproject-alert-btn');
-                        btn.css('text-align','center');
                         btn.find('.HJproject-alert-btn0').click(function(){
                             HJalert.close(index);
                         });
@@ -185,7 +186,7 @@
         //最大最小化按钮,暂不考虑
         //var ismax = config.maxmin //&& (config.type === 1 || config.type === 2);
         //标题栏支持样式设置
-        var titleHTML = (config.title ? '<div class="HJproject-alert-title" style="' + (titype ? config.title[1] : '') + '">' + (titype ? config.title[0] : config.title) + '</div>' : '');
+        var titleHTML = (config.title ? '<div class="HJproject-alert-' + (config.type === 'dialog' && config.icon != -1 ? 'tipsTitle' : 'title') + '" style="' + (titype ? config.title[1] : '') + '">' + (titype ? config.title[0] : config.title) + '</div>' : '');
         config.zIndex = zIndex;
 
         callback([
@@ -194,9 +195,17 @@
         	//主体,暂不考虑closeBtn
         	'<div class="HJproject-alert HJproject-alert-' + config.type + '" id="HJproject-alert' + times + '" type="' + config.type + ' "times="' + times + '" conType="' + (conType ? 'object' : 'string') + '" style="z-index: ' + zIndex + '; width:' + config.area[0] + ';height:' + config.area[1] + '">' 
                 //title部分(由于tips加入扩展性受到影响可以优化)
-                 + (conType && config.type != 'loading' ? (config.type == 'dialog' && config.icon != -1 ? '<div style="height:50px;width:260px;text-align:center;"><div class="HJproject-alert-ico HJproject-alert-ico'+config.icon + '"></div></div>' : '') : titleHTML)
+                 + (conType && config.type != 'loading' ? (config.type == 'dialog' && config.icon != -1 ? '<div class="HJproject-alert-icoWrapper">'
+                 //创建tips图标
+                 +(function(){
+                    //
+                    var rt = '';
+                    rt += '<span class="HJproject-alert-tipsIcon HJproject-alert-tipsIcon' + config.icon + ' HJproject-alert-tipsIcon' + config.icon + 'r"></span><span class="HJproject-alert-tipsIcon HJproject-alert-tipsIcon' + config.icon + ' HJproject-alert-tipsIcon' + config.icon + 'l"></span><div class="HJproject-alert-tipsPlaceholder HJproject-alert-tipsPlaceholder' + config.icon + '"></div>';
+                    return rt;
+                 }())
+                 + '</div>' + titleHTML : '') : titleHTML)
                  //content部分
-                 + '<div id="' + (config.id || '') + '" class="HJproject-alert-content' + (config.type=='loading' ? 'HJproject-alert-loading' + config.icon:'')+ '">' 
+                 + '<div id="' + (config.id || '') + '" class="HJproject-alert-content ' + (config.type=='loading' ? 'HJproject-alert-loading' + config.icon:'')+ '">' 
                  //+ (config.type == 'dialog' && config.icon != -1 ? '<i class="HJproject-alert-ico HJproject-alert-ico'+config.icon + '"></i>' : '')
                  + (function(){
                     var rt = '';
@@ -206,7 +215,7 @@
                         if(typeof config.content[1] === 'undefined'){
                             //错误处理（dialog传递参数错误）
                         }else{
-                            rt += conType ? '<div style="position:relative;">' + (config.content[0] || '') + '</div>' : (config.content || '');
+                            rt += conType ? '<div class="HJproject-alert-tipsContent">' + (config.content[0] || '') + '</div>' : (config.content || '');
                         }
                     }
                     return rt + '</div>';
