@@ -4,6 +4,7 @@
 HJalertjs 是我们根据layer插件的弹出层进行二次开发的自定义的弹出层插件。该插件主要用于对各种弹出层的高效简洁创建、更改、删除等操作。用户可以通过更改参数从而相应的更改弹层样式和模板。
 ##1.HJalert 默认全局配置信息
 以下配置信息适用于所有弹层类型，如果用户不对参数进行修改则默认使用以下配置信息
+<<<<<<< HEAD
 
 
 Name | Type | Default | Description
@@ -20,6 +21,24 @@ labels | Array[string] | Optional parameter that is used with the [category axis
 xLabels | Array[string] | Optional parameter that is used with the category axis and is used if the axis is horizontal
 yLabels | Array[string] | Optional parameter that is used with the category axis and is used if the axis is vertical
 
+=======
+Name|Type|Default|Description
+:-:|:-:|:-:|:-
+type|String|'page'|用于确定弹出层类型
+title|String or Object|''|弹层标题
+area|String or Object|'auto'|用于确定弹层大小
+maxWidth|Number|360|用于规定弹层最大宽度
+resize|Boolean|true|用于确定弹层是否可更改大小
+icon|Number|-1|用于确定弹层图标样式(只有提示框有此属性）
+shade|Boolean|true|确定弹层遮罩
+shadeClose|Boolean|true|确定弹层遮罩点击是否关闭窗口
+zIndex|Number|19891014|确定弹层堆叠顺序
+move|String|'.HJproject-alert-title'|确定弹层可移动部分
+btn|Object|String or Object|null|弹层按钮
+btnAlian|Char|'r'|弹层按钮对齐方式
+success|Function|null|弹层调用成功回调函数
+moveEnd|Function|null|弹层移动后回调函数
+>>>>>>> parent of 1469dbf... modify docs
 
 
 ##2.各HJalert弹层类型默认配置
