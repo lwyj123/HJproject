@@ -22,6 +22,15 @@ success|Function|null|弹层调用成功回调函数
 moveEnd|Function|null|弹层移动后回调函数
 
 
+Name | Type | Description
+--- | --- | ----
+datasets | Array[object] | Contains data for each dataset. See the documentation for each chart type to determine the valid options that can be attached to the dataset
+labels | Array[string] | Optional parameter that is used with the [category axis](#scales-category-scale).
+xLabels | Array[string] | Optional parameter that is used with the category axis and is used if the axis is horizontal
+yLabels | Array[string] | Optional parameter that is used with the category axis and is used if the axis is vertical
+
+
+
 ##2.各HJalert弹层类型默认配置
 ###2.1.默认弹层配置
 默认弹层其默认配置为全局默认配置。
