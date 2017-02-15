@@ -50,8 +50,7 @@ layui.define(['layer', 'laytpl', 'upload'], function(exports) {
         options.skin = skin;
         options = $.extend({
             isfriend: !0,
-            isgroup: !0,
-            voice: 'default.wav'
+            isgroup: !0
         }, options);
         if (!window.JSON || !window.JSON.parse) return;
         init(options);
@@ -85,7 +84,8 @@ layui.define(['layer', 'laytpl', 'upload'], function(exports) {
 
     //设置聊天界面最小化
     LAYIM.prototype.setChatMin = function() {
-        return setChatMin(), this;
+        setChatMin();
+        return this;
     };
 
     //设置当前会话状态
@@ -93,7 +93,8 @@ layui.define(['layer', 'laytpl', 'upload'], function(exports) {
         var thatChat = thisChat();
         if (!thatChat) return;
         var status = thatChat.elem.find('.layim-chat-status');
-        return status.html(str), this;
+        status.html(str);
+        return this;
     };
 
     //接受消息
@@ -106,29 +107,9 @@ layui.define(['layer', 'laytpl', 'upload'], function(exports) {
         return notice(data), this;
     };
 
-    //打开添加好友/群组面板
-    LAYIM.prototype.add = function(data) {
-        return popAdd(data), this;
-    };
-
-    //好友分组面板
-    LAYIM.prototype.setFriendGroup = function(data) {
-        return popAdd(data, 'setGroup'), this;
-    };
-
     //消息盒子的提醒
     LAYIM.prototype.msgbox = function(nums) {
         return msgbox(nums), this;
-    };
-
-    //添加好友/群
-    LAYIM.prototype.addList = function(data) {
-        return addList(data), this;
-    };
-
-    //删除好友/群
-    LAYIM.prototype.removeList = function(data) {
-        return removeList(data), this;
     };
 
     //设置好友在线/离线状态
@@ -171,10 +152,7 @@ layui.define(['layer', 'laytpl', 'upload'], function(exports) {
     var elemSkinTpl = ['<ul class="layui-layim-skin">', '{{# layui.each(d.skin, function(index, item){ }}', '<li><img layim-event="setSkin" src="{{ item }}"></li>', '{{# }); }}', '<li layim-event="setSkin"><cite>简约</cite></li>', '</ul>'].join('');
 
     //聊天主模板
-    var elemChatTpl = ['<div class="layim-chat layim-chat-{{d.data.type}}{{d.first ? " layui-show" : ""}}">', '<div class="layui-unselect layim-chat-title">', '<div class="layim-chat-other">', '<img src="{{ d.data.avatar }}"><span class="layim-chat-username" layim-event="{{ d.data.type==="group" ? \"groupMembers\" : \"\" }}">{{ d.data.name||"佚名" }} {{d.data.temporary ? "<cite>临时会话</cite>" : ""}} {{# if(d.data.type==="group"){ }} <em class="layim-chat-members"></em><i class="layui-icon">&#xe61a;</i> {{# } }}</span>', '<p class="layim-chat-status"></p>', '</div>', '</div>', '<div class="layim-chat-main">', '<ul></ul>', '</div>', '<div class="layim-chat-footer">', '<div class="layui-unselect layim-chat-tool" data-json="{{encodeURIComponent(JSON.stringify(d.data))}}">', '<span class="layui-icon layim-tool-face" title="选择表情" layim-event="face">&#xe60c;</span>', '{{# if(d.base && d.base.uploadImage){ }}', '<span class="layui-icon layim-tool-image" title="上传图片" layim-event="image">&#xe60d;<input type="file" name="file"></span>', '{{# }; }}', '{{# if(d.base && d.base.uploadFile){ }}', '<span class="layui-icon layim-tool-image" title="发送文件" layim-event="image" data-type="file">&#xe61d;<input type="file" name="file"></span>', '{{# }; }}', '{{# layui.each(d.base.tool, function(index, item){ }}', '<span class="layui-icon layim-tool-{{item.alias}}" title="{{item.title}}" layim-event="extend" lay-filter="{{ item.alias }}">{{item.icon}}</span>', '{{# }); }}', '{{# if(d.base && d.base.chatLog){ }}', '<span class="layim-tool-log" layim-event="chatLog"><i class="layui-icon">&#xe60e;</i>聊天记录</span>', '{{# }; }}', '</div>', '<div class="layim-chat-textarea"><textarea></textarea></div>', '<div class="layim-chat-bottom">', '<div class="layim-chat-send">', '{{# if(!d.base.brief){ }}', '<span class="layim-send-close" layim-event="closeThisChat">关闭</span>', '{{# } }}', '<span class="layim-send-btn" layim-event="send">发送</span>', '<span class="layim-send-set" layim-event="setSend" lay-type="show"><em class="layui-edge"></em></span>', '<ul class="layui-anim layim-menu-box">', '<li {{d.local.sendHotKey !== "Ctrl+Enter" ? "class=layim-this" : ""}} layim-event="setSend" lay-type="Enter"><i class="layui-icon">&#xe618;</i>按Enter键发送消息</li>', '<li {{d.local.sendHotKey === "Ctrl+Enter" ? "class=layim-this" : ""}} layim-event="setSend"  lay-type="Ctrl+Enter"><i class="layui-icon">&#xe618;</i>按Ctrl+Enter键发送消息</li>', '</ul>', '</div>', '</div>', '</div>', '</div>'].join('');
-
-    //添加好友群组模版
-    var elemAddTpl = ['<div class="layim-add-box">', '<div class="layim-add-img"><img class="layui-circle" src="{{ d.data.avatar }}"><p>{{ d.data.name||"" }}</p></div>', '<div class="layim-add-remark">', '{{# if(d.data.type === "friend" && d.type === "setGroup"){ }}', '<p>选择分组</p>', '{{# } if(d.data.type === "friend"){ }}', '<select class="layui-select" id="LAY_layimGroup">', '{{# layui.each(d.data.group, function(index, item){ }}', '<option value="{{ item.id }}">{{ item.groupname }}</option>', '{{# }); }}', '</select>', '{{# } }}', '{{# if(d.data.type === "group"){ }}', '<p>请输入验证信息</p>', '{{# } if(d.type !== "setGroup"){ }}', '<textarea id="LAY_layimRemark" placeholder="验证信息" class="layui-textarea"></textarea>', '{{# } }}', '</div>', '</div>'].join('');
+    var elemChatTpl = ['<div style="display: block;" class="layim-chat layim-chat-{{d.data.type}}">', '<div class="layui-unselect layim-chat-title">', '<div class="layim-chat-other">', '<span class="layim-chat-username">{{ d.data.name||"佚名" }} </span>', '<p class="layim-chat-status"></p>', '</div>', '</div>', '<div class="layim-chat-main">', '<ul></ul>', '</div>', '<div class="layim-chat-footer">', '<div class="layui-unselect layim-chat-tool" data-json="{{encodeURIComponent(JSON.stringify(d.data))}}">', '<span class="layui-icon layim-tool-face" title="选择表情" layim-event="face">&#xe60c;</span>', '{{# if(d.base && d.base.uploadImage){ }}', '<span class="layui-icon layim-tool-image" title="上传图片" layim-event="image">&#xe60d;<input type="file" name="file"></span>', '{{# layui.each(d.base.tool, function(index, item){ }}', '<span class="layui-icon layim-tool-{{item.alias}}" title="{{item.title}}" layim-event="extend" lay-filter="{{ item.alias }}">{{item.icon}}</span>', '{{# }); }}', '{{# }; }}', '</div>', '<div class="layim-chat-textarea"><textarea></textarea></div>', '<div class="layim-chat-bottom">', '<div class="layim-chat-send">', '{{# if(!d.base.brief){ }}', '<span class="layim-send-close" layim-event="closeThisChat">关闭</span>', '{{# } }}', '<span class="layim-send-btn" layim-event="send">发送</span>', '</div>', '</div>', '</div>', '</div>'].join('');
 
     //聊天内容列表模版
     var elemChatMain = ['<li {{ d.mine ? "class=layim-chat-mine" : "" }} {{# if(d.cid){ }}data-cid="{{d.cid}}"{{# } }}>', '<div class="layim-chat-user"><img src="{{ d.avatar }}"><cite>', '{{# if(d.mine){ }}', '<i>{{ layui.data.date(d.timestamp) }}</i>{{ d.username||"佚名" }}', '{{# } else { }}', '{{ d.username||"佚名" }}<i>{{ layui.data.date(d.timestamp) }}</i>', '{{# } }}', '</cite></div>', '<div class="layim-chat-text">{{ layui.data.content(d.content||"&nbsp") }}</div>', '</li>'].join('');
@@ -213,7 +191,8 @@ layui.define(['layer', 'laytpl', 'upload'], function(exports) {
             .replace(/face\[([^\s\[\]]+?)\]/g, function(face) { //转义表情
                 var alt = face.replace(/^face/g, '');
                 return '<img alt="' + alt + '" title="' + alt + '" src="' + faces[alt] + '">';
-            }).replace(/a\([\s\S]+?\)\[[\s\S]*?\]/g, function(str) { //转义链接
+            })
+            .replace(/a\([\s\S]+?\)\[[\s\S]*?\]/g, function(str) { //转义链接
                 var href = (str.match(/a\(([\s\S]+?)\)\[/) || [])[1];
                 var text = (str.match(/\)\[([\s\S]*?)\]/) || [])[1];
                 if (!href) return str;
@@ -244,143 +223,51 @@ layui.define(['layer', 'laytpl', 'upload'], function(exports) {
     };
 
     //处理初始化信息
-    var cache = { message: {}, chat: [] },
-        init = function(options) {
-            var init = options.init || {}
-            mine = init.mine || {}, local = layui.data('layim')[mine.id] || {}, obj = {
-                base: options,
-                local: local,
-                mine: mine,
-                history: local.history || {}
-            }, create = function(data) {
-                var mine = data.mine || {};
-                var local = layui.data('layim')[mine.id] || {},
-                    obj = {
-                        base: options //基础配置信息
-                            ,
-                        local: local //本地数据
-                            ,
-                        mine: mine //我的用户信息
-                            ,
-                        friend: data.friend || [] //联系人信息
-                            ,
-                        group: data.group || [] //群组信息
-                            ,
-                        history: local.history || {} //历史会话信息
-                    };
-                cache = $.extend(cache, obj);
-                popim(laytpl(elemTpl).render(obj));
-                if (local.close || options.min) {
-                    popmin();
-                }
-                layui.each(call.ready, function(index, item) {
-                    item && item(obj);
-                });
+    var cache = {
+        message: {},
+        chat: []
+    };
+    var init = function(options) {
+        var init = options.init || {}
+        mine = init.mine || {}, local = layui.data('layim')[mine.id] || {}, obj = {
+            base: options,
+            local: local,
+            mine: mine,
+            history: local.history || {}
+        };
+        var create = function(data) {
+            var mine = data.mine || {};
+            var local = layui.data('layim')[mine.id] || {};
+            var obj = {
+                base: options, //基础配置信息                      
+                local: local, //本地数据                     
+                mine: mine, //我的用户信息          
+                friend: data.friend || [], //联系人信息
+                group: data.group || [], //群组信息                 
+                history: local.history || {} //历史会话信息
             };
             cache = $.extend(cache, obj);
-            if (options.brief) {
-                return layui.each(call.ready, function(index, item) {
-                    item && item(obj);
-                });
-            };
-            init.url ? post(init, create, 'INIT') : create(init);
+            layui.each(call.ready, function(index, item) {
+                item && item(obj);
+            });
         };
-
-    //显示主面板
-    var layimMain, popim = function(content) {
-        return layer.open({
-            type: 1,
-            area: ['260px', '520px'],
-            skin: 'layui-box layui-layim',
-            title: '&#8203;',
-            offset: 'rb',
-            id: 'layui-layim',
-            shade: false,
-            anim: 2,
-            resize: false,
-            content: content,
-            success: function(layero) {
-                layimMain = layero;
-
-                setSkin(layero);
-
-                if (cache.base.right) {
-                    layero.css('margin-left', '-' + cache.base.right);
-                }
-                if (layimClose) {
-                    layer.close(layimClose.attr('times'));
-                }
-
-                //按最新会话重新排列
-                var arr = [],
-                    historyElem = layero.find('.layim-list-history');
-                historyElem.find('li').each(function() {
-                    arr.push($(this).prop('outerHTML'))
-                });
-                if (arr.length > 0) {
-                    arr.reverse();
-                    historyElem.html(arr.join(''));
-                }
-
-                banRightMenu();
-                events.sign();
-            },
-            cancel: function(index) {
-                popmin();
-                var local = layui.data('layim')[cache.mine.id] || {};
-                local.close = true;
-                layui.data('layim', {
-                    key: cache.mine.id,
-                    value: local
-                });
-                return false;
-            }
-        });
+        cache = $.extend(cache, obj);
+        if (options.brief) {
+            return layui.each(call.ready, function(index, item) {
+                item && item(obj);
+            });
+        };
+        init.url ? post(init, create, 'INIT') : create(init);
     };
 
-    //屏蔽主面板右键菜单
-    var banRightMenu = function() {
-        layimMain.on('contextmenu', function(event) {
-            event.cancelBubble = true
-            event.returnValue = false;
-            return false;
-        });
 
-        var hide = function() {
-            layer.closeAll('tips');
-        };
 
-        //自定义历史会话右键菜单
-        layimMain.find('.layim-list-history').on('contextmenu', 'li', function(e) {
-            var othis = $(this);
-            var html = '<ul data-id="' + othis[0].id + '" data-index="' + othis.data('index') + '"><li layim-event="menuHistory" data-type="one">移除该会话</li><li layim-event="menuHistory" data-type="all">清空全部会话列表</li></ul>';
-
-            if (othis.hasClass('layim-null')) return;
-
-            layer.tips(html, this, {
-                tips: 1,
-                time: 0,
-                anim: 5,
-                fixed: true,
-                skin: 'layui-box layui-layim-contextmenu',
-                success: function(layero) {
-                    var stopmp = function(e) { stope(e); };
-                    layero.off('mousedown', stopmp).on('mousedown', stopmp);
-                }
-            });
-            $(document).off('mousedown', hide).on('mousedown', hide);
-            $(window).off('resize', hide).on('resize', hide);
-
-        });
-    }
 
     //主面板最小化状态
-    var layimClose, popmin = function(content) {
+    var layimClose;
+    var popmin = function(content) {
         if (layimClose) {
             layer.close(layimClose.attr('times'));
-        }
-        if (layimMain) {
-            layimMain.hide();
         }
         cache.mine = cache.mine || {};
         return layer.open({
@@ -402,7 +289,6 @@ layui.define(['layer', 'laytpl', 'upload'], function(exports) {
                 }
                 layero.on('click', function() {
                     layer.close(index);
-                    layimMain.show();
                     var local = layui.data('layim')[cache.mine.id] || {};
                     delete local.close;
                     layui.data('layim', {
@@ -415,150 +301,139 @@ layui.define(['layer', 'laytpl', 'upload'], function(exports) {
     };
 
     //显示聊天面板
-    var layimChat, layimMin, chatIndex, To = {},
-        popchat = function(data) {
-            data = data || {};
 
-            var chat = $('#layui-layim-chat'),
-                render = {
-                    data: data,
-                    base: cache.base,
-                    local: cache.local
-                };
+    var layimChat;
+    var layimMin;
+    var chatIndex;
+    var To = {};
+    /**
+     * 核心，显示聊天界面
+     * @param  {[type]} data [description]
+     * @return {[type]}      [description]
+     */
+    var popchat = function(data) {
+        data = data || {};
 
-            if (!data.id) {
-                return layer.msg('非法用户');
+        var chat = $('#layui-layim-chat'),
+            render = {
+                data: data,
+                base: cache.base,
+                local: cache.local
+            };
+
+        if (!data.id) {
+            return layer.msg('非法用户');
+        }
+
+        if (chat[0]) {
+            var list = layimChat.find('.layim-chat-list');
+            var listThat = list.find('.layim-chatlist-' + data.type + data.id);
+            var hasFull = layimChat.find('.layui-layer-max').hasClass('layui-layer-maxmin');
+            var chatBox = chat.children('.layim-chat-box');
+
+            //如果是最小化，则还原窗口
+            if (layimChat.css('display') === 'none') {
+                layimChat.show();
             }
 
-            if (chat[0]) {
-                var list = layimChat.find('.layim-chat-list');
-                var listThat = list.find('.layim-chatlist-' + data.type + data.id);
-                var hasFull = layimChat.find('.layui-layer-max').hasClass('layui-layer-maxmin');
-                var chatBox = chat.children('.layim-chat-box');
-
-                //如果是最小化，则还原窗口
-                if (layimChat.css('display') === 'none') {
-                    layimChat.show();
-                }
-
-                if (layimMin) {
-                    layer.close(layimMin.attr('times'));
-                }
-
-                //如果出现多个聊天面板
-                if (list.find('li').length === 1 && !listThat[0]) {
-                    hasFull || layimChat.css('width', 800);
-                    list.css({
-                        height: layimChat.height()
-                    }).show();
-                    chatBox.css('margin-left', '200px');
-                }
-
-                //打开的是非当前聊天面板，则新增面板
-                if (!listThat[0]) {
-                    list.append(laytpl(elemChatList).render(render));
-                    chatBox.append(laytpl(elemChatTpl).render(render));
-                    resizeChat();
-                }
-
-                changeChat(list.find('.layim-chatlist-' + data.type + data.id));
-                listThat[0] || viewChatlog();
-                setHistory(data);
-                hotkeySend();
-
-                return chatIndex;
+            if (layimMin) {
+                layer.close(layimMin.attr('times'));
             }
 
-            render.first = !0;
+            //如果出现多个聊天面板
+            if (list.find('li').length === 1 && !listThat[0]) {
+                hasFull || layimChat.css('width', 800);
+                list.css({
+                    height: layimChat.height()
+                }).show();
+                chatBox.css('margin-left', '200px');
+            }
 
-            var index = chatIndex = layer.open({
-                type: 1,
-                area: '600px',
-                skin: 'layui-box layui-layim-chat',
-                id: 'layui-layim-chat',
-                title: '&#8203;',
-                shade: false,
-                maxmin: true,
-                offset: data.offset || 'auto',
-                anim: data.anim || 0,
-                closeBtn: cache.base.brief ? false : 1,
-                content: laytpl('<ul class="layui-unselect layim-chat-list">' + elemChatList + '</ul><div class="layim-chat-box">' + elemChatTpl + '</div>').render(render),
-                success: function(layero) {
-                    layimChat = layero;
+            //打开的是非当前聊天面板，则新增面板
+            if (!listThat[0]) {
+                list.append(laytpl(elemChatList).render(render));
+                chatBox.append(laytpl(elemChatTpl).render(render));
+            }
 
-                    layero.css({
-                        'min-width': '500px',
-                        'min-height': '420px'
+            listThat[0] || viewChatlog();
+
+            return chatIndex;
+        }
+
+        render.first = !0;
+
+        var index = chatIndex = layer.open({
+            type: 1,
+            area: '600px',
+            skin: 'layui-box layui-layim-chat',
+            id: 'layui-layim-chat',
+            title: '&#8203;',
+            shade: false,
+            maxmin: true,
+            offset: data.offset || 'auto',
+            anim: data.anim || 0,
+            closeBtn: cache.base.brief ? false : 1,
+            content: laytpl('<ul class="layui-unselect layim-chat-list">' + elemChatList + '</ul><div class="layim-chat-box">' + elemChatTpl + '</div>').render(render),
+            success: function(layero) {
+                layimChat = layero;
+
+                layero.css({
+                    'min-width': '500px',
+                    'min-height': '420px'
+                });
+
+                typeof data.success === 'function' && data.success(layero);
+
+                setSkin(layero);
+
+                viewChatlog();
+                showOffMessage();
+
+                //聊天窗口的切换监听
+                layui.each(call.chatChange, function(index, item) {
+                    item && item(thisChat());
+                });
+
+                //查看大图
+                layero.on('dblclick', '.layui-layim-photos', function() {
+                    var src = this.src;
+                    layer.close(popchat.photosIndex);
+                    layer.photos({
+                        photos: {
+                            data: [{
+                                "alt": "大图模式",
+                                "src": src
+                            }]
+                        },
+                        shade: 0.01,
+                        closeBtn: 2,
+                        anim: 0,
+                        resize: false,
+                        success: function(layero, index) {
+                            popchat.photosIndex = index;
+                        }
                     });
-
-                    typeof data.success === 'function' && data.success(layero);
-
-                    hotkeySend();
-                    setSkin(layero);
-                    setHistory(data);
-
-                    viewChatlog();
-                    showOffMessage();
-
-                    //聊天窗口的切换监听
-                    layui.each(call.chatChange, function(index, item) {
-                        item && item(thisChat());
-                    });
-
-                    //查看大图
-                    layero.on('dblclick', '.layui-layim-photos', function() {
-                        var src = this.src;
-                        layer.close(popchat.photosIndex);
-                        layer.photos({
-                            photos: {
-                                data: [{
-                                    "alt": "大图模式",
-                                    "src": src
-                                }]
-                            },
-                            shade: 0.01,
-                            closeBtn: 2,
-                            anim: 0,
-                            resize: false,
-                            success: function(layero, index) {
-                                popchat.photosIndex = index;
-                            }
-                        });
-                    });
-                },
-                full: function(layero) {
-                    layer.style(index, {
-                        width: '100%',
-                        height: '100%'
-                    }, true);
-                    resizeChat();
-                },
-                resizing: resizeChat,
-                restore: resizeChat,
-                min: function() {
-                    setChatMin();
-                    return false;
-                },
-                end: function() {
-                    layer.closeAll('tips');
-                    layimChat = null;
-                }
-            });
-            return index;
-        };
-
-    //重置聊天窗口大小
-    var resizeChat = function() {
-        var list = layimChat.find('.layim-chat-list'),
-            chatMain = layimChat.find('.layim-chat-main'),
-            chatHeight = layimChat.height();
-        list.css({
-            height: chatHeight
+                });
+            },
+            full: function(layero) {
+                layer.style(index, {
+                    width: '100%',
+                    height: '100%'
+                }, true);
+            },
+            min: function() {
+                setChatMin();
+                return false;
+            },
+            end: function() {
+                layer.closeAll('tips');
+                layimChat = null;
+            }
         });
-        chatMain.css({
-            height: chatHeight - 20 - 80 - 158
-        })
+        return index;
     };
+
+
 
     //设置聊天窗口最小化 & 新消息提醒
     var setChatMin = function(newMsg) {
@@ -606,88 +481,6 @@ layui.define(['layer', 'laytpl', 'upload'], function(exports) {
         });
     };
 
-    //打开添加好友、群组面板、好友分组面板
-    var popAdd = function(data, type) {
-        data = data || {};
-        layer.close(popAdd.index);
-        return popAdd.index = layer.open({
-            type: 1,
-            area: '430px',
-            title: {
-                friend: '添加好友',
-                group: '加入群组'
-            }[data.type] || '',
-            shade: false,
-            resize: false,
-            btn: type ? ['确认', '取消'] : ['发送申请', '关闭'],
-            content: laytpl(elemAddTpl).render({
-                data: {
-                    name: data.username || data.groupname,
-                    avatar: data.avatar,
-                    group: data.group || parent.layui.layim.cache().friend || [],
-                    type: data.type
-                },
-                type: type
-            }),
-            yes: function(index, layero) {
-                var groupElem = layero.find('#LAY_layimGroup'),
-                    remarkElem = layero.find('#LAY_layimRemark')
-                if (type) {
-                    data.submit && data.submit(groupElem.val(), index);
-                } else {
-                    data.submit && data.submit(groupElem.val(), remarkElem.val(), index);
-                }
-            }
-        });
-    };
-
-    //切换聊天
-    var changeChat = function(elem, del) {
-        elem = elem || $('.layim-chat-list .' + THIS);
-        var index = elem.index() === -1 ? 0 : elem.index();
-        var str = '.layim-chat',
-            cont = layimChat.find(str).eq(index);
-        var hasFull = layimChat.find('.layui-layer-max').hasClass('layui-layer-maxmin');
-
-        if (del) {
-
-            //如果关闭的是当前聊天，则切换聊天焦点
-            if (elem.hasClass(THIS)) {
-                changeChat(index === 0 ? elem.next() : elem.prev());
-            }
-
-            elem.remove();
-            cont.remove();
-
-            var length = layimChat.find(str).length;
-
-            //只剩下1个列表，隐藏左侧区块
-            if (length === 1) {
-                layimChat.find('.layim-chat-list').hide();
-                if (!hasFull) {
-                    layimChat.css('width', '600px');
-                }
-                layimChat.find('.layim-chat-box').css('margin-left', 0);
-            }
-
-            //聊天列表不存在，则关闭聊天界面
-            if (length === 0) {
-                layer.close(chatIndex);
-            }
-
-            return false;
-        }
-
-        elem.addClass(THIS).siblings().removeClass(THIS);
-        cont.addClass(SHOW).siblings(str).removeClass(SHOW);
-        cont.find('textarea').focus();
-
-        //聊天窗口的切换监听
-        layui.each(call.chatChange, function(index, item) {
-            item && item(thisChat());
-        });
-        showOffMessage();
-    };
 
     //展示存在队列中的消息
     var showOffMessage = function() {
@@ -721,38 +514,6 @@ layui.define(['layer', 'laytpl', 'upload'], function(exports) {
                 return cache.base.initSkin ? 'url(' + (layui.cache.dir + 'css/modules/layim/skin/' + cache.base.initSkin) + ')' : 'none';
             }()
         });
-    };
-
-    //记录历史会话
-    var setHistory = function(data) {
-        var local = layui.data('layim')[cache.mine.id] || {};
-        var obj = {},
-            history = local.history || {};
-        var is = history[data.type + data.id];
-
-        if (!layimMain) return;
-
-        var historyElem = layimMain.find('.layim-list-history');
-
-        data.historyTime = new Date().getTime();
-        history[data.type + data.id] = data;
-
-        local.history = history;
-
-        layui.data('layim', {
-            key: cache.mine.id,
-            value: local
-        });
-
-        if (is) return;
-
-        obj[data.type + data.id] = data;
-        var historyList = laytpl(listTpl({
-            type: 'history',
-            item: 'd.data'
-        })).render({ data: obj });
-        historyElem.prepend(historyList);
-        historyElem.find('.layim-null').remove();
     };
 
     //发送消息
@@ -813,14 +574,6 @@ layui.define(['layer', 'laytpl', 'upload'], function(exports) {
         }
     };
 
-    //消息声音提醒
-    var voice = function() {
-        if (device.ie && device.ie < 9) return;
-        var audio = document.createElement("audio");
-        audio.src = layui.cache.dir + 'css/modules/layim/voice/' + cache.base.voice;
-        audio.play();
-    };
-
     //接受消息
     var messageNew = {},
         getMessage = function(data) {
@@ -836,10 +589,6 @@ layui.define(['layer', 'laytpl', 'upload'], function(exports) {
             }
             data.system || pushChatlog(data);
             messageNew = JSON.parse(JSON.stringify(data));
-
-            if (cache.base.voice) {
-                voice();
-            }
 
             if ((!layimChat && data.content) || index === -1) {
                 if (cache.message[data.type + data.id]) {
@@ -935,13 +684,6 @@ layui.define(['layer', 'laytpl', 'upload'], function(exports) {
             chatListMore();
         };
 
-    //消息盒子的提醒
-    var ANIM_MSG = 'layui-anim-loop layer-anim-05',
-        msgbox = function(num) {
-            var msgboxElem = layimMain.find('.layim-tool-msgbox');
-            msgboxElem.find('span').addClass(ANIM_MSG).html(num);
-        };
-
     //存储最近MAX_ITEM条聊天记录到本地
     var pushChatlog = function(message) {
         var local = layui.data('layim')[cache.mine.id] || {};
@@ -982,105 +724,6 @@ layui.define(['layer', 'laytpl', 'upload'], function(exports) {
         chatListMore();
     };
 
-    //添加好友或群
-    var addList = function(data) {
-        var obj = {},
-            has, listElem = layimMain.find('.layim-list-' + data.type);
-
-        if (cache[data.type]) {
-            if (data.type === 'friend') {
-                layui.each(cache.friend, function(index, item) {
-                    if (data.groupid == item.id) {
-                        //检查好友是否已经在列表中
-                        layui.each(cache.friend[index].list, function(idx, itm) {
-                            if (itm.id == data.id) {
-                                return has = true
-                            }
-                        });
-                        if (has) return layer.msg('好友 [' + (data.username || '') + '] 已经存在列表中', { anim: 6 });
-                        cache.friend[index].list = cache.friend[index].list || [];
-                        obj[cache.friend[index].list.length] = data;
-                        data.groupIndex = index;
-                        cache.friend[index].list.push(data); //在cache的friend里面也增加好友
-                        return true;
-                    }
-                });
-            } else if (data.type === 'group') {
-                //检查群组是否已经在列表中
-                layui.each(cache.group, function(idx, itm) {
-                    if (itm.id == data.id) {
-                        return has = true
-                    }
-                });
-                if (has) return layer.msg('您已是 [' + (data.groupname || '') + '] 的群成员', { anim: 6 });
-                obj[cache.group.length] = data;
-                cache.group.push(data);
-            }
-        }
-
-        if (has) return;
-
-        var list = laytpl(listTpl({
-            type: data.type,
-            item: 'd.data',
-            index: data.type === 'friend' ? 'data.groupIndex' : null
-        })).render({ data: obj });
-
-        if (data.type === 'friend') {
-            var li = listElem.find('>li').eq(data.groupIndex);
-            li.find('.layui-layim-list').append(list);
-            li.find('.layim-count').html(cache.friend[data.groupIndex].list.length); //刷新好友数量
-            //如果初始没有好友
-            if (li.find('.layim-null')[0]) {
-                li.find('.layim-null').remove();
-            }
-        } else if (data.type === 'group') {
-            listElem.append(list);
-            //如果初始没有群组
-            if (listElem.find('.layim-null')[0]) {
-                listElem.find('.layim-null').remove();
-            }
-        }
-    };
-
-    //移出好友或群
-    var removeList = function(data) {
-        var listElem = layimMain.find('.layim-list-' + data.type);
-        var obj = {};
-        if (cache[data.type]) {
-            if (data.type === 'friend') {
-                layui.each(cache.friend, function(index1, item1) {
-                    layui.each(item1.list, function(index, item) {
-                        if (data.id == item.id) {
-                            var li = listElem.find('>li').eq(index1);
-                            var list = li.find('.layui-layim-list>li');
-                            li.find('.layui-layim-list>li').eq(index).remove();
-                            cache.friend[index1].list.splice(index, 1); //从cache的friend里面也删除掉好友
-                            li.find('.layim-count').html(cache.friend[index1].list.length); //刷新好友数量  
-                            //如果一个好友都没了
-                            if (cache.friend[index1].list.length === 0) {
-                                li.find('.layui-layim-list').html('<li class="layim-null">该分组下已无好友了</li>');
-                            }
-                            return true;
-                        }
-                    });
-                });
-            } else if (data.type === 'group') {
-                layui.each(cache.group, function(index, item) {
-                    if (data.id == item.id) {
-                        listElem.find('>li').eq(index).remove();
-                        cache.group.splice(index, 1); //从cache的group里面也删除掉数据
-                        //如果一个群组都没了
-                        if (cache.group.length === 0) {
-                            listElem.html('<li class="layim-null">暂无群组</li>');
-                        }
-                        return true;
-                    }
-                });
-            }
-        }
-    };
-
     //查看更多记录
     var chatListMore = function() {
         var thatChat = thisChat(),
@@ -1091,7 +734,7 @@ layui.define(['layer', 'laytpl', 'upload'], function(exports) {
         if (length >= MAX_ITEM) {
             var first = ul.find('li').eq(0);
             if (!ul.prev().hasClass('layim-chat-system')) {
-                ul.before('<div class="layim-chat-system"><span layim-event="chatLog">查看更多记录</span></div>');
+                ul.before('<div class="layim-chat-system"></div>');
             }
             if (length > MAX_ITEM) {
                 first.remove();
@@ -1100,31 +743,6 @@ layui.define(['layer', 'laytpl', 'upload'], function(exports) {
         chatMain.scrollTop(chatMain[0].scrollHeight + 1000);
         chatMain.find('ul li:last').find('img').load(function() {
             chatMain.scrollTop(chatMain[0].scrollHeight + 1000);
-        });
-    };
-
-    //快捷键发送
-    var hotkeySend = function() {
-        var thatChat = thisChat(),
-            textarea = thatChat.textarea;
-        textarea.focus();
-        textarea.off('keydown').on('keydown', function(e) {
-            var local = layui.data('layim')[cache.mine.id] || {};
-            var keyCode = e.keyCode;
-            if (local.sendHotKey === 'Ctrl+Enter') {
-                if (e.ctrlKey && keyCode === 13) {
-                    sendMessage();
-                }
-                return;
-            }
-            if (keyCode === 13) {
-                if (e.ctrlKey) {
-                    return textarea.val(textarea.val() + '\n');
-                }
-                if (e.shiftKey) return;
-                e.preventDefault();
-                sendMessage();
-            }
         });
     };
 
@@ -1157,504 +775,160 @@ layui.define(['layer', 'laytpl', 'upload'], function(exports) {
     };
 
     //事件
-    var anim = 'layui-anim-upbit',
-        events = {
-            //在线状态
-            status: function(othis, e) {
-                var hide = function() {
-                    othis.next().hide().removeClass(anim);
-                };
-                var type = othis.attr('lay-type');
-                if (type === 'show') {
-                    stope(e);
-                    othis.next().show().addClass(anim);
-                    $(document).off('click', hide).on('click', hide);
-                } else {
-                    var prev = othis.parent().prev();
-                    othis.addClass(THIS).siblings().removeClass(THIS);
-                    prev.html(othis.find('cite').html());
-                    prev.removeClass('layim-status-' + (type === 'online' ? 'hide' : 'online'))
-                        .addClass('layim-status-' + type);
-                    layui.each(call.online, function(index, item) {
-                        item && item(type);
-                    });
-                }
-            }
-
-            //编辑签名
-            ,
-            sign: function() {
-                var input = layimMain.find('.layui-layim-remark');
-                input.on('change', function() {
-                    var value = this.value;
-                    layui.each(call.sign, function(index, item) {
-                        item && item(value);
-                    });
-                });
-                input.on('keyup', function(e) {
-                    var keyCode = e.keyCode;
-                    if (keyCode === 13) {
-                        this.blur();
-                    }
-                });
-            }
-
-            //大分组切换
-            ,
-            tab: function(othis) {
-                var index, main = '.layim-tab-content';
-                var tabs = layimMain.find('.layui-layim-tab>li');
-                typeof othis === 'number' ? (
-                    index = othis, othis = tabs.eq(index)
-                ) : (
-                    index = othis.index()
-                );
-                index > 2 ? tabs.removeClass(THIS) : (
-                    events.tab.index = index, othis.addClass(THIS).siblings().removeClass(THIS)
-                )
-                layimMain.find(main).eq(index).addClass(SHOW).siblings(main).removeClass(SHOW);
-            }
-
-            //展开联系人分组
-            ,
-            spread: function(othis) {
-                var type = othis.attr('lay-type');
-                var spread = type === 'true' ? 'false' : 'true';
-                var local = layui.data('layim')[cache.mine.id] || {};
-                othis.next()[type === 'true' ? 'removeClass' : 'addClass'](SHOW);
-                local['spread' + othis.parent().index()] = spread;
-                layui.data('layim', {
-                    key: cache.mine.id,
-                    value: local
-                });
-                othis.attr('lay-type', spread);
-                othis.find('.layui-icon').html(spread === 'true' ? '&#xe61a;' : '&#xe602;');
-            }
-
-            //搜索
-            ,
-            search: function(othis) {
-                var search = layimMain.find('.layui-layim-search');
-                var main = layimMain.find('#layui-layim-search');
-                var input = search.find('input'),
-                    find = function(e) {
-                        var val = input.val().replace(/\s/);
-                        if (val === '') {
-                            events.tab(events.tab.index | 0);
-                        } else {
-                            var data = [],
-                                friend = cache.friend || [];
-                            var group = cache.group || [],
-                                html = '';
-                            for (var i = 0; i < friend.length; i++) {
-                                for (var k = 0; k < (friend[i].list || []).length; k++) {
-                                    if (friend[i].list[k].username.indexOf(val) !== -1) {
-                                        friend[i].list[k].type = 'friend';
-                                        friend[i].list[k].index = i;
-                                        friend[i].list[k].list = k;
-                                        data.push(friend[i].list[k]);
-                                    }
-                                }
-                            }
-                            for (var j = 0; j < group.length; j++) {
-                                if (group[j].groupname.indexOf(val) !== -1) {
-                                    group[j].type = 'group';
-                                    group[j].index = j;
-                                    group[j].list = j;
-                                    data.push(group[j]);
-                                }
-                            }
-                            if (data.length > 0) {
-                                for (var l = 0; l < data.length; l++) {
-                                    html += '<li layim-event="chat" data-type="' + data[l].type + '" data-index="' + data[l].index + '" data-list="' + data[l].list + '"><img src="' + data[l].avatar + '"><span>' + (data[l].username || data[l].groupname || '佚名') + '</span><p>' + (data[l].remark || data[l].sign || '') + '</p></li>';
-                                }
-                            } else {
-                                html = '<li class="layim-null">无搜索结果</li>';
-                            }
-                            main.html(html);
-                            events.tab(3);
-                        }
-                    };
-                if (!cache.base.isfriend && cache.base.isgroup) {
-                    events.tab.index = 1;
-                } else if (!cache.base.isfriend && !cache.base.isgroup) {
-                    events.tab.index = 2;
-                }
-                search.show();
-                input.focus();
-                input.off('keyup', find).on('keyup', find);
-            }
-
-            //关闭搜索
-            ,
-            closeSearch: function(othis) {
-                othis.parent().hide();
-                events.tab(events.tab.index | 0);
-            }
-
-            //消息盒子
-            ,
-            msgbox: function() {
-                var msgboxElem = layimMain.find('.layim-tool-msgbox');
-                layer.close(events.msgbox.index);
-                msgboxElem.find('span').removeClass(ANIM_MSG).html('');
-                return events.msgbox.index = layer.open({
-                    type: 2,
-                    title: '消息盒子',
-                    shade: false,
-                    maxmin: true,
-                    area: ['600px', '520px'],
-                    skin: 'layui-box layui-layer-border',
-                    resize: false,
-                    content: cache.base.msgbox
-                });
-            }
-
-            //弹出查找页面
-            ,
-            find: function() {
-                layer.close(events.find.index);
-                return events.find.index = layer.open({
-                    type: 2,
-                    title: '查找',
-                    shade: false,
-                    maxmin: true,
-                    area: ['1000px', '520px'],
-                    skin: 'layui-box layui-layer-border',
-                    resize: false,
-                    content: cache.base.find
-                });
-            }
-
-            //弹出更换背景
-            ,
-            skin: function() {
-                layer.open({
-                    type: 1,
-                    title: '更换背景',
-                    shade: false,
-                    area: '300px',
-                    skin: 'layui-box layui-layer-border',
-                    id: 'layui-layim-skin',
-                    zIndex: 66666666,
-                    resize: false,
-                    content: laytpl(elemSkinTpl).render({
-                        skin: cache.base.skin
-                    })
-                });
-            }
-
-            //关于
-            ,
-            about: function() {
-                layer.alert('版本： ' + v + '<br>版权所有：<a href="http://layim.layui.com" target="_blank">layim.layui.com</a>', {
-                    title: '关于 LayIM',
-                    shade: false
-                });
-            }
-
-            //生成换肤
-            ,
-            setSkin: function(othis) {
-                var src = othis.attr('src');
-                var local = layui.data('layim')[cache.mine.id] || {};
-                local.skin = src;
-                if (!src) delete local.skin;
-                layui.data('layim', {
-                    key: cache.mine.id,
-                    value: local
-                });
-                try {
-                    layimMain.css({
-                        'background-image': src ? 'url(' + src + ')' : 'none'
-                    });
-                    layimChat.css({
-                        'background-image': src ? 'url(' + src + ')' : 'none'
-                    });
-                } catch (e) {}
-            }
-
-            //弹出聊天面板
-            ,
-            chat: function(othis) {
-                var local = layui.data('layim')[cache.mine.id] || {};
-                var type = othis.data('type'),
-                    index = othis.data('index');
-                var list = othis.attr('data-list') || othis.index(),
-                    data = {};
-                if (type === 'friend') {
-                    data = cache[type][index].list[list];
-                } else if (type === 'group') {
-                    data = cache[type][list];
-                } else if (type === 'history') {
-                    data = (local.history || {})[index] || {};
-                }
-                data.name = data.name || data.username || data.groupname;
-                if (type !== 'history') {
-                    data.type = type;
-                }
-                popchat(data);
-            }
-
-            //切换聊天
-            ,
-            tabChat: function(othis) {
-                changeChat(othis);
-            }
-
-            //关闭聊天列表
-            ,
-            closeChat: function(othis) {
-                changeChat(othis.parent(), 1);
-            },
-            closeThisChat: function() {
-                changeChat(null, 1);
-            }
-
-            //展开群组成员
-            ,
-            groupMembers: function(othis, e) {
-                var icon = othis.find('.layui-icon'),
-                    hide = function() {
-                        icon.html('&#xe61a;');
-                        othis.data('down', null);
-                        layer.close(events.groupMembers.index);
-                    },
-                    stopmp = function(e) { stope(e) };
-
-                if (othis.data('down')) {
-                    hide();
-                } else {
-                    icon.html('&#xe619;');
-                    othis.data('down', true);
-                    events.groupMembers.index = layer.tips('<ul class="layim-members-list"></ul>', othis, {
-                        tips: 3,
-                        time: 0,
-                        anim: 5,
-                        fixed: true,
-                        skin: 'layui-box layui-layim-members',
-                        success: function(layero) {
-                            var members = cache.base.members || {},
-                                thatChat = thisChat(),
-                                ul = layero.find('.layim-members-list'),
-                                li = '',
-                                membersCache = {},
-                                hasFull = layimChat.find('.layui-layer-max').hasClass('layui-layer-maxmin'),
-                                listNone = layimChat.find('.layim-chat-list').css('display') === 'none';
-                            if (hasFull) {
-                                ul.css({
-                                    width: $(window).width() - 22 - (listNone || 200)
-                                });
-                            }
-                            members.data = $.extend(members.data, {
-                                id: thatChat.data.id
-                            });
-                            post(members, function(res) {
-                                layui.each(res.list, function(index, item) {
-                                    li += '<li data-uid="' + item.id + '"><a href="javascript:;"><img src="' + item.avatar + '"><cite>' + item.username + '</cite></a></li>';
-                                    membersCache[item.id] = item;
-                                });
-                                ul.html(li);
-
-                                //获取群员
-                                othis.find('.layim-chat-members').html(res.members || (res.list || []).length + '人');
-
-                                //私聊
-                                ul.find('li').on('click', function() {
-                                    var uid = $(this).data('uid'),
-                                        info = membersCache[uid]
-                                    popchat({
-                                        name: info.username,
-                                        type: 'friend',
-                                        avatar: info.avatar,
-                                        id: info.id
-                                    });
-                                    hide();
-                                });
-
-                                layui.each(call.members, function(index, item) {
-                                    item && item(res);
-                                });
-                            });
-                            layero.on('mousedown', function(e) {
-                                stope(e);
-                            });
-                        }
-                    });
-                    $(document).off('mousedown', hide).on('mousedown', hide);
-                    $(window).off('resize', hide).on('resize', hide);
-                    othis.off('mousedown', stopmp).on('mousedown', stopmp);
-                }
-            }
-
-            //发送聊天内容
-            ,
-            send: function() {
-                sendMessage();
-            }
-
-            //设置发送聊天快捷键
-            ,
-            setSend: function(othis, e) {
-                var box = events.setSend.box = othis.siblings('.layim-menu-box'),
-                    type = othis.attr('lay-type');
-
-                if (type === 'show') {
-                    stope(e);
-                    box.show().addClass(anim);
-                    $(document).off('click', events.setSendHide).on('click', events.setSendHide);
-                } else {
-                    othis.addClass(THIS).siblings().removeClass(THIS);
-                    var local = layui.data('layim')[cache.mine.id] || {};
-                    local.sendHotKey = type;
-                    layui.data('layim', {
-                        key: cache.mine.id,
-                        value: local
-                    });
-                    events.setSendHide(e, othis.parent());
-                }
-            },
-            setSendHide: function(e, box) {
-                (box || events.setSend.box).hide().removeClass(anim);
-            }
-
-            //表情
-            ,
-            face: function(othis, e) {
-                var content = '',
-                    thatChat = thisChat();
-
-                for (var key in faces) {
-                    content += '<li title="' + key + '"><img src="' + faces[key] + '"></li>';
-                }
-                content = '<ul class="layui-clear layim-face-list">' + content + '</ul>';
-
-                events.face.index = layer.tips(content, othis, {
-                    tips: 1,
-                    time: 0,
-                    fixed: true,
-                    skin: 'layui-box layui-layim-face',
-                    success: function(layero) {
-                        layero.find('.layim-face-list>li').on('mousedown', function(e) {
-                            stope(e);
-                        }).on('click', function() {
-                            focusInsert(thatChat.textarea[0], 'face' + this.title + ' ');
-                            layer.close(events.face.index);
-                        });
-                    }
-                });
-
-                $(document).off('mousedown', events.faceHide).on('mousedown', events.faceHide);
-                $(window).off('resize', events.faceHide).on('resize', events.faceHide);
+    var anim = 'layui-anim-upbit';
+    var events = {
+        //在线状态
+        status: function(othis, e) {
+            var hide = function() {
+                othis.next().hide().removeClass(anim);
+            };
+            var type = othis.attr('lay-type');
+            if (type === 'show') {
                 stope(e);
-
-            },
-            faceHide: function() {
-                layer.close(events.face.index);
+                othis.next().show().addClass(anim);
+                $(document).off('click', hide).on('click', hide);
+            } else {
+                var prev = othis.parent().prev();
+                othis.addClass(THIS).siblings().removeClass(THIS);
+                prev.html(othis.find('cite').html());
+                prev.removeClass('layim-status-' + (type === 'online' ? 'hide' : 'online'))
+                    .addClass('layim-status-' + type);
+                layui.each(call.online, function(index, item) {
+                    item && item(type);
+                });
             }
+        },
 
-            //图片或一般文件
-            ,
-            image: function(othis) {
-                var type = othis.data('type') || 'images',
-                    api = {
-                        images: 'uploadImage',
-                        file: 'uploadFile'
-                    },
-                    thatChat = thisChat(),
-                    upload = cache.base[api[type]] || {};
+        //弹出查找页面
+        find: function() {
+            layer.close(events.find.index);
+            return events.find.index = layer.open({
+                type: 2,
+                title: '查找',
+                shade: false,
+                maxmin: true,
+                area: ['1000px', '520px'],
+                skin: 'layui-box layui-layer-border',
+                resize: false,
+                content: cache.base.find
+            });
+        },
 
-                layui.upload({
-                    url: upload.url || '',
-                    method: upload.type,
-                    elem: othis.find('input')[0],
-                    unwrap: true,
-                    type: type,
-                    success: function(res) {
-                        if (res.code == 0) {
-                            res.data = res.data || {};
-                            if (type === 'images') {
-                                focusInsert(thatChat.textarea[0], 'img[' + (res.data.src || '') + ']');
-                            } else if (type === 'file') {
-                                focusInsert(thatChat.textarea[0], 'file(' + (res.data.src || '') + ')[' + (res.data.name || '下载文件') + ']');
-                            }
-                            sendMessage();
-                        } else {
-                            layer.msg(res.msg || '上传失败');
+        //弹出更换背景
+        skin: function() {
+            layer.open({
+                type: 1,
+                title: '更换背景',
+                shade: false,
+                area: '300px',
+                skin: 'layui-box layui-layer-border',
+                id: 'layui-layim-skin',
+                zIndex: 66666666,
+                resize: false,
+                content: laytpl(elemSkinTpl).render({
+                    skin: cache.base.skin
+                })
+            });
+        },
+
+        //关于
+        about: function() {
+            layer.alert('版本： ' + v + '<br>当前版本基于layim魔改，当前'+ v +'版权所有：<a href="http://layim.layui.com" target="_blank">layim.layui.com</a>', {
+                title: '关于 LayIM',
+                shade: false
+            });
+        },
+
+        //生成换肤
+        setSkin: function(othis) {
+            var src = othis.attr('src');
+            var local = layui.data('layim')[cache.mine.id] || {};
+            local.skin = src;
+            if (!src) delete local.skin;
+            layui.data('layim', {
+                key: cache.mine.id,
+                value: local
+            });
+            try {
+                layimChat.css({
+                    'background-image': src ? 'url(' + src + ')' : 'none'
+                });
+            } catch (e) {}
+        },
+
+        //弹出聊天面板
+        chat: function(othis) {
+            var local = layui.data('layim')[cache.mine.id] || {};
+            var type = othis.data('type'),
+                index = othis.data('index');
+            var list = othis.attr('data-list') || othis.index(),
+                data = {};
+            if (type === 'friend') {
+                data = cache[type][index].list[list];
+            } else if (type === 'group') {
+                data = cache[type][list];
+            } else if (type === 'history') {
+                data = (local.history || {})[index] || {};
+            }
+            data.name = data.name || data.username || data.groupname;
+            if (type !== 'history') {
+                data.type = type;
+            }
+            popchat(data);
+        },
+
+
+        //发送聊天内容
+        send: function() {
+            sendMessage();
+        },
+
+
+        //图片或一般文件
+        image: function(othis) {
+            var type = othis.data('type') || 'images',
+                api = {
+                    images: 'uploadImage',
+                    file: 'uploadFile'
+                },
+                thatChat = thisChat(),
+                upload = cache.base[api[type]] || {};
+
+            layui.upload({
+                url: upload.url || '',
+                method: upload.type,
+                elem: othis.find('input')[0],
+                unwrap: true,
+                type: type,
+                success: function(res) {
+                    if (res.code == 0) {
+                        res.data = res.data || {};
+                        if (type === 'images') {
+                            focusInsert(thatChat.textarea[0], 'img[' + (res.data.src || '') + ']');
+                        } else if (type === 'file') {
+                            focusInsert(thatChat.textarea[0], 'file(' + (res.data.src || '') + ')[' + (res.data.name || '下载文件') + ']');
                         }
+                        sendMessage();
+                    } else {
+                        layer.msg(res.msg || '上传失败');
                     }
-                });
-            }
-
-            //扩展工具栏
-            ,
-            extend: function(othis) {
-                var filter = othis.attr('lay-filter'),
-                    thatChat = thisChat();
-
-                layui.each(call['tool(' + filter + ')'], function(index, item) {
-                    item && item.call(othis, function(content) {
-                        focusInsert(thatChat.textarea[0], content);
-                    }, sendMessage, thatChat);
-                });
-            }
-
-            //聊天记录
-            ,
-            chatLog: function(othis) {
-                var thatChat = thisChat();
-                if (!cache.base.chatLog) {
-                    return layer.msg('未开启更多聊天记录');
                 }
-                layer.close(events.chatLog.index);
-                return events.chatLog.index = layer.open({
-                    type: 2,
-                    maxmin: true,
-                    title: '与 ' + thatChat.data.name + ' 的聊天记录',
-                    area: ['450px', '100%'],
-                    shade: false,
-                    offset: 'rb',
-                    skin: 'layui-box',
-                    anim: 2,
-                    id: 'layui-layim-chatlog',
-                    content: cache.base.chatLog + '?id=' + thatChat.data.id + '&type=' + thatChat.data.type
-                });
-            }
+            });
+        },
 
-            //历史会话右键菜单操作
-            ,
-            menuHistory: function(othis, e) {
-                var local = layui.data('layim')[cache.mine.id] || {};
-                var parent = othis.parent(),
-                    type = othis.data('type');
-                var hisElem = layimMain.find('.layim-list-history');
-                var none = '<li class="layim-null">暂无历史会话</li>'
+        //扩展工具栏
+        extend: function(othis) {
+            var filter = othis.attr('lay-filter'),
+                thatChat = thisChat();
 
-                if (type === 'one') {
-                    var history = local.history;
-                    delete history[parent.data('index')];
-                    local.history = history;
-                    layui.data('layim', {
-                        key: cache.mine.id,
-                        value: local
-                    });
-                    $('#' + parent.data('id')).remove();
-                    if (hisElem.find('li').length === 0) {
-                        hisElem.html(none);
-                    }
-                } else if (type === 'all') {
-                    delete local.history;
-                    layui.data('layim', {
-                        key: cache.mine.id,
-                        value: local
-                    });
-                    hisElem.html(none);
-                }
+            layui.each(call['tool(' + filter + ')'], function(index, item) {
+                item && item.call(othis, function(content) {
+                    focusInsert(thatChat.textarea[0], content);
+                }, sendMessage, thatChat);
+            });
+        },
 
-                layer.closeAll('tips');
-            }
-
-        };
+    };
 
     //暴露接口
     exports('layim', new LAYIM());
