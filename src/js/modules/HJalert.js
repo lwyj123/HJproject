@@ -11,7 +11,9 @@
 ! function(window, undefined) {
     "use strict";
 
-    var $, win, ready = {
+    var $;
+    var win;
+    var ready = {
         getPath: function() {
             var js = document.scripts,
                 script = js[js.length - 1],
@@ -31,7 +33,7 @@
         moduleName: 'HJalert',
         index: 0,
         jsPath: ready.getPath,
-        cssPath: ready.getPath.replace(/\/js\//,"/css/"),
+        cssPath: ready.getPath.replace(/\/js\//, "/css/"),
 
         /**
          * 自动链接css文件 
@@ -80,70 +82,70 @@
         },
 
         //参数过滤
-        filtPara:function(config){
+        filtPara: function(config) {
 
         },
 
         //提示窗口,提示内容和提示跟随对象，可选参数options
-        tips:function(content,domObj,options){
+        tips: function(content, domObj, options) {
             //默认tips窗口配置
             var tipConfig = $.extend({
-                type : 'dialog',
-                title : 'Tips',
-                content : [content,domObj],
-                shade : false,
-                maxWidth : 210,
-                resize : false,
-                icon : 0,
+                type: 'dialog',
+                title: 'Tips',
+                content: [content, domObj],
+                shade: false,
+                maxWidth: 210,
+                resize: false,
+                icon: 0,
                 btn: ['确定'],
-                btnAlian:'c',
-                success: function(alertObject,index){
+                btnAlian: 'c',
+                success: function(alertObject, index) {
                     var btn = alertObject.find('.HJproject-alert-btn');
-                    btn.find('.HJproject-alert-btn0').click(function(){
+                    btn.find('.HJproject-alert-btn0').click(function() {
                         HJalert.close(index);
                     });
                 },
-            },options);
+            }, options);
 
             return HJalert.open(tipConfig);
         },
         //信息窗口,内容，自定义配置，回函数
-        msg:function(content,options,callback){
+        msg: function(content, options, callback) {
             //接受四种类型输入：[content],[content,options],[content,options,callback],[content,callback]
             var type = typeof options === 'function',
                 msgConfig = {
-                    type : 'dialog',
-                    title : 'message',
-                    content : content,
-                    shade : false,
-                    maxWidth : 210,
-                    resize : false,
-                    btn : ['确定'],
-                    btnAlian:'c',
-                    success : function(alertObject,index){
+                    type: 'dialog',
+                    title: 'message',
+                    content: content,
+                    shade: false,
+                    maxWidth: 210,
+                    resize: false,
+                    btn: ['确定'],
+                    btnAlian: 'c',
+                    success: function(alertObject, index) {
                         var btn = alertObject.find('.HJproject-alert-btn');
-                        btn.find('.HJproject-alert-btn0').click(function(){
+                        btn.find('.HJproject-alert-btn0').click(function() {
                             HJalert.close(index);
                         });
                     },
 
-            };
+                };
             //由于两个参数输入存在两种情况
-            if(type){
+            if (type) {
                 callback = options;
-            }else{
-                msgConfig = $.extend(msgConfig,options); 
+            } else {
+                msgConfig = $.extend(msgConfig, options);
             }
             //对配置参数进行过滤,剔除不必要参数（可封装）
             msgConfig.icon = -1;
 
-            if(callback){
+            if (callback) {
                 HJalert.open(msgConfig);
-               return callback(); 
-            }else{
+                return callback();
+            } else {
                 return HJalert.open(msgConfig);
             }
-            
+
             //return HJalert.open(msgConfig);
         }
     };
@@ -165,16 +167,16 @@
      * @type {Object}
      */
     Class.pt.config = {
-        type : 'page',                          //默认弹出层为页面 传入参数['dialog','page','loading']
-        move: '.HJproject-alert-title',         //拖曳元素，选择器表示,比如-> '.layui-layer-title'
-        title: '',           //title的内容
-        zIndex: 19891014,    
+        type: 'page', //默认弹出层为页面 传入参数['dialog','page','loading']
+        move: '.HJproject-alert-title', //拖曳元素，选择器表示,比如-> '.layui-layer-title'
+        title: '', //title的内容
+        zIndex: 19891014,
         maxWidth: 360,
-        resize: true,        //右下角是否有resize部分
-        shade : true,
-        shadeClose: true,    //默认点遮罩层会关闭窗口
-        area : 'auto',       //默认水平垂直居中
-        icon : -1,           //消息框或者加载框默认为0
+        resize: true, //右下角是否有resize部分
+        shade: true,
+        shadeClose: true, //默认点遮罩层会关闭窗口
+        area: 'auto', //默认水平垂直居中
+        icon: -1, //消息框或者加载框默认为0
     };
 
     /**
@@ -187,10 +189,10 @@
             times = that.index,
             config = that.config;
         var zIndex = config.zIndex + times,
-        	titype = typeof config.title === 'object',
+            titype = typeof config.title === 'object',
             //内容类型判定
             conType = typeof config.content === 'object'
-            
+
         //最大最小化按钮,暂不考虑
         //var ismax = config.maxmin //&& (config.type === 1 || config.type === 2);
         //标题栏支持样式设置
@@ -198,56 +200,54 @@
         config.zIndex = zIndex;
 
         callback([
-        	//遮罩
-        	config.shade ? ('<div class="HJproject-alert-shade" id="HJproject-alert-shade' + times + '" times ="' + times + '" style="' + ('z-index:' + (zIndex-1) +'; background-color:'+ (config.shade[1]||'#000') +'; opacity:' + (config.shade[0]||config.shade) +'; filter:alpha(opacity=' + (config.shade[0]*100||config.shade*100) + ');') + '"></div>'):'',
-        	//主体,暂不考虑closeBtn
-        	'<div class="HJproject-alert HJproject-alert-' + config.type + '" id="HJproject-alert' + times + '" type="' + config.type + ' "times="' + times + '" conType="' + (conType ? 'object' : 'string') + '" style="z-index: ' + zIndex + '; width:' + config.area[0] + ';height:' + config.area[1] + '">' 
-                //title部分(由于tips加入扩展性受到影响可以优化)
-                 + (conType && config.type != 'loading' ? (config.type == 'dialog' && config.icon != -1 ? '<div class="HJproject-alert-icoWrapper">'
-                 //创建tips图标
-                 +(function(){
+            //遮罩
+            config.shade ? ('<div class="HJproject-alert-shade" id="HJproject-alert-shade' + times + '" times ="' + times + '" style="' + ('z-index:' + (zIndex - 1) + '; background-color:' + (config.shade[1] || '#000') + '; opacity:' + (config.shade[0] || config.shade) + '; filter:alpha(opacity=' + (config.shade[0] * 100 || config.shade * 100) + ');') + '"></div>') : '',
+            //主体,暂不考虑closeBtn
+            '<div class="HJproject-alert HJproject-alert-' + config.type + '" id="HJproject-alert' + times + '" type="' + config.type + ' "times="' + times + '" conType="' + (conType ? 'object' : 'string') + '" style="z-index: ' + zIndex + '; width:' + config.area[0] + ';height:' + config.area[1] + '">'
+            //title部分(由于tips加入扩展性受到影响可以优化)
+            + (conType && config.type != 'loading' ? (config.type == 'dialog' && config.icon != -1 ? '<div class="HJproject-alert-icoWrapper">'
+                //创建tips图标
+                + (function() {
                     //
                     var rt = '';
                     rt += '<span class="HJproject-alert-tipsIcon HJproject-alert-tipsIcon' + config.icon + ' HJproject-alert-tipsIcon' + config.icon + 'r"></span><span class="HJproject-alert-tipsIcon HJproject-alert-tipsIcon' + config.icon + ' HJproject-alert-tipsIcon' + config.icon + 'l"></span><div class="HJproject-alert-tipsPlaceholder HJproject-alert-tipsPlaceholder' + config.icon + '"></div>';
                     return rt;
-                 }())
-                 + '</div>' + titleHTML : '') : titleHTML)
-                 //content部分
-                 + '<div id="' + (config.id || '') + '" class="HJproject-alert-content ' + (config.type=='loading' ? 'HJproject-alert-loading' + config.icon:'')+ '">' 
-                 //+ (config.type == 'dialog' && config.icon != -1 ? '<i class="HJproject-alert-ico HJproject-alert-ico'+config.icon + '"></i>' : '')
-                 + (function(){
-                    var rt = '';
-                    if(config.type === 'page'){
-                        rt += conType ? '' : (config.content || '');
-                    }else if(config.type === 'dialog'){
-                        if(typeof config.content[1] === 'undefined'){
-                            //错误处理（dialog传递参数错误）
-                        }else{
-                            rt += conType ? '<div class="HJproject-alert-tipsContent">' + (config.content[0] || '') + '</div>' : (config.content || '');
-                        }
+                }()) + '</div>' + titleHTML : '') : titleHTML)
+            //content部分
+            + '<div id="' + (config.id || '') + '" class="HJproject-alert-content ' + (config.type == 'loading' ? 'HJproject-alert-loading' + config.icon : '') + '">'
+            //+ (config.type == 'dialog' && config.icon != -1 ? '<i class="HJproject-alert-ico HJproject-alert-ico'+config.icon + '"></i>' : '')
+            + (function() {
+                var rt = '';
+                if (config.type === 'page') {
+                    rt += conType ? '' : (config.content || '');
+                } else if (config.type === 'dialog') {
+                    if (typeof config.content[1] === 'undefined') {
+                        //错误处理（dialog传递参数错误）
+                    } else {
+                        rt += conType ? '<div class="HJproject-alert-tipsContent">' + (config.content[0] || '') + '</div>' : (config.content || '');
                     }
-                    return rt + '</div>';
-                 }())
-                 //+(config.type == 'page' && conType ? '' : (config.content[0] || config.content || '')) + '</div>' 
-                 + '<span class="HJproject-alert-setwin">'
-                 /* + function(){
-        		var closebtn = ismax ? '<a class="HJproject-alert-min" href="javascript:;"><cite></cite></a><a class="HJproject-alert-ico HJproject-alert-max" href="javascript:;"></a>':'';
-        		config.closeBtn && (closebtn += '<a class="HJproject-alert-ico ' + 'HJproject-alert-close HJproject-alert-close HJproject-alert-close' + (config.title ? config.closebtn : '1') + '" href="javascript:;"></a>');
-        		return closebtn;
-        	    }()*/ 
-                + '</span>' 
-                //button部分
-                + (config.btn ? function(){
-        		  var button = '';
-        		  typeof config.btn === 'string' && (config.btn = [config.btn]);
-        		  for (var i = 0,len = config.btn.length; i < len; i++) {
-        			 button += '<a class="HJproject-alert-btn' + '' + i + '">' + config.btn[i] + '</a>' ;
-        		  }
-        		//config.btnAlign???
-        		  return '<div class="HJproject-alert-btn HJproject-alert-btn-' + (config.btnAlian || '') + '">' + button + '</div>';
-        	}() : '')
-        	+ (config.resize ? '<span class="HJproject-alert-resize"></span>' : '') + '</div>'
-        	],titleHTML,$('<div class="HJproject-alert-move></div>'));
+                }
+                return rt + '</div>';
+            }())
+            //+(config.type == 'page' && conType ? '' : (config.content[0] || config.content || '')) + '</div>' 
+            + '<span class="HJproject-alert-setwin">'
+            /* + function(){
+                var closebtn = ismax ? '<a class="HJproject-alert-min" href="javascript:;"><cite></cite></a><a class="HJproject-alert-ico HJproject-alert-max" href="javascript:;"></a>':'';
+                config.closeBtn && (closebtn += '<a class="HJproject-alert-ico ' + 'HJproject-alert-close HJproject-alert-close HJproject-alert-close' + (config.title ? config.closebtn : '1') + '" href="javascript:;"></a>');
+                return closebtn;
+                }()*/
+            + '</span>'
+            //button部分
+            + (config.btn ? function() {
+                var button = '';
+                typeof config.btn === 'string' && (config.btn = [config.btn]);
+                for (var i = 0, len = config.btn.length; i < len; i++) {
+                    button += '<a class="HJproject-alert-btn' + '' + i + '">' + config.btn[i] + '</a>';
+                }
+                //config.btnAlign???
+                return '<div class="HJproject-alert-btn HJproject-alert-btn-' + (config.btnAlian || '') + '">' + button + '</div>';
+            }() : '') + (config.resize ? '<span class="HJproject-alert-resize"></span>' : '') + '</div>'
+        ], titleHTML, $('<div class="HJproject-alert-move></div>'));
 
         return that;
     };
@@ -263,9 +263,9 @@
             body = $('body');
 
         //需要加入对参数的处理，如area处理为数组
-        if($('#'+config.id)[0])  return;
+        if ($('#' + config.id)[0]) return;
 
-        if(typeof config.area === 'string'){
+        if (typeof config.area === 'string') {
             config.area = config.area === 'auto' ? ['', ''] : [config.area, ''];
         }
         //依据情况初始化（比如关闭其他弹出层）
@@ -281,13 +281,13 @@
             body.append(html[0]);
             body.append(html[1]);
 
-            if(!$('.HJproject-alert-move')[0]) {
-                body.append(HJglobal.moveElem = moveElem);        
+            if (!$('.HJproject-alert-move')[0]) {
+                body.append(HJglobal.moveElem = moveElem);
             }
 
-            that.alertObject = $('#HJproject-alert'+ times);
+            that.alertObject = $('#HJproject-alert' + times);
         });
-        
+
         //调用auto
         that.auto(times);
 
@@ -311,39 +311,39 @@
             alertObject = that.alertObject;
 
         //自适应宽度,没设置宽度默认最大宽度
-        if(config.area[0] === '' && config.maxWidth > 0){
-        	alertObject.outerWidth() > config.maxWidth && alertObject.width(config.maxWidth);
+        if (config.area[0] === '' && config.maxWidth > 0) {
+            alertObject.outerWidth() > config.maxWidth && alertObject.width(config.maxWidth);
         }
         //获取实际实体innerwidth
-        var area = [alertObject.innerWidth(),alertObject.innerHeight()];
+        var area = [alertObject.innerWidth(), alertObject.innerHeight()];
         //获取title,button的outerWidth
         var titHeight = alertObject.find('.HJproject-alert-title').outerHeight() || 0;
         var btnHeight = alertObject.find('.HJproject-alert-btn').outerHeight() || 0;
         //自适应高度,将空余部分设置为content高度
-        function autoElemHeight(elem){
-        	elem = alertObject.find(elem);
-        	elem.height(area[1] - titHeight - btnHeight - 2*(parseFloat(elem.css('padding')) | 0));
+        function autoElemHeight(elem) {
+            elem = alertObject.find(elem);
+            elem.height(area[1] - titHeight - btnHeight - 2 * (parseFloat(elem.css('padding')) | 0));
         }
         //如果未设置高度，并且实体高度过界，则进行自适应处理
-        if(config.area[1] === ''){
-        	if(area[1] >= win.height()){
-        		area[1] = win.height();
-        		autoElemHeight('.HJproject-alert-content');
-        	}
-        }else{
-        	//设置高度后自适应处理
-        	autoElemHeight('.HJproject-alert-content');
+        if (config.area[1] === '') {
+            if (area[1] >= win.height()) {
+                area[1] = win.height();
+                autoElemHeight('.HJproject-alert-content');
+            }
+        } else {
+            //设置高度后自适应处理
+            autoElemHeight('.HJproject-alert-content');
         }
         /*switch(config.type){
-        	default: if (config.area[1] === ''){
-        		if(area[1] >= win.height()){
-        			area[1] = win.height();
-        			autoElemHeight('.HJproject-alert-content');
-        		}
-        	}else{
-        			autoElemHeight('.HJproject-alert-content');
-        		}
-        	break;
+            default: if (config.area[1] === ''){
+                if(area[1] >= win.height()){
+                    area[1] = win.height();
+                    autoElemHeight('.HJproject-alert-content');
+                }
+            }else{
+                    autoElemHeight('.HJproject-alert-content');
+                }
+            break;
         }*/
         return that;
     };
@@ -362,22 +362,22 @@
         var area = [alertObject.outerWidth(), alertObject.outerHeight()];
         var type = typeof config.offset === 'object';
         //偏移类型
-        var offsetType = ['t','r','b','l','lt','lb','rt','rb'];
+        var offsetType = ['t', 'r', 'b', 'l', 'lt', 'lb', 'rt', 'rb'];
 
         //处理offset值，return float型
-      	function dealOffset(offset,des){
-      		var rt = offset;
-        	switch(des){
-        		case 't':
-        			rt = /%$/.test(offset)?win.height()*parseFloat(offset)/100 : parseFloat(offset);
-        			break;
-        		case 'l':
-        			rt = /%$/.test(offset)?win.width()*parseFloat(offset)/100 : parseFloat(offset);
-        			break;
-        		default:
-        			rt = parseFloat(offset);
-        	}
-        	return rt;
+        function dealOffset(offset, des) {
+            var rt = offset;
+            switch (des) {
+                case 't':
+                    rt = /%$/.test(offset) ? win.height() * parseFloat(offset) / 100 : parseFloat(offset);
+                    break;
+                case 'l':
+                    rt = /%$/.test(offset) ? win.width() * parseFloat(offset) / 100 : parseFloat(offset);
+                    break;
+                default:
+                    rt = parseFloat(offset);
+            }
+            return rt;
         }
 
         //获取偏移量
@@ -385,56 +385,56 @@
         that.offsetLeft = (win.width() - area[0]) / 2;
 
         //根据传入参数设置偏移坐标,可能情况有三种，默认设置(undefined)=auto,offsetType中任意种情况，坐标对
-        if(type){
-        	that.offsetTop = config.offset[0];
-        	that.offsetLeft = config.offset[1] || that.offsetLeft;
-        }else if(config.offset !== 'auto'){
-        	//对每种偏移类型进行处理
-        	switch(config.offset){
-        		case offsetType[0]:
-        			that.offsetTop = 0;
-        			break;
-        		case offsetType[1]:
-        			that.offsetLeft = win.width() - area[0];
-        			break;
-        		case offsetType[2]:
-        			that.offsetTop = win.height() - area[1];
-        			break;
-        		case offsetType[3]:
-        			that.offsetLeft = 0;
-        			break;
-        		case offsetType[4]:
-        			that.offsetTop = 0;
-        			that.offsetLeft = 0;
-        			break;
-        		case offsetType[5]:
-        			that.offsetLeft = 0;
-        			that.offsetTop = win.height() - area[1];
-        			break;
-        		case offsetType[6]:
-        			that.offsetTop = 0;
-        			that.offsetLeft = win.width() - area[0];
-        			break;
-        		case offsetType[7]:
-        			that.offsetLeft = win.width() - area[0];
-        			that.offsetTop = win.height() - area[1];
-        			break;
-        		default:
-        			//只定义top坐标，水平居中
-        			that.offsetTop = config.offset;
-        	}
-        }else{
-        	//默认不固定弹层，offset水平垂直居中
-        	that.offsetTop = dealOffset(that.offsetTop,'t');
-        	that.offsetLeft = dealOffset(that.offsetLeft,'l');
-        	that.offsetLeft += win.scrollLeft();
-        	that.offsetTop += win.scrollTop();
+        if (type) {
+            that.offsetTop = config.offset[0];
+            that.offsetLeft = config.offset[1] || that.offsetLeft;
+        } else if (config.offset !== 'auto') {
+            //对每种偏移类型进行处理
+            switch (config.offset) {
+                case offsetType[0]:
+                    that.offsetTop = 0;
+                    break;
+                case offsetType[1]:
+                    that.offsetLeft = win.width() - area[0];
+                    break;
+                case offsetType[2]:
+                    that.offsetTop = win.height() - area[1];
+                    break;
+                case offsetType[3]:
+                    that.offsetLeft = 0;
+                    break;
+                case offsetType[4]:
+                    that.offsetTop = 0;
+                    that.offsetLeft = 0;
+                    break;
+                case offsetType[5]:
+                    that.offsetLeft = 0;
+                    that.offsetTop = win.height() - area[1];
+                    break;
+                case offsetType[6]:
+                    that.offsetTop = 0;
+                    that.offsetLeft = win.width() - area[0];
+                    break;
+                case offsetType[7]:
+                    that.offsetLeft = win.width() - area[0];
+                    that.offsetTop = win.height() - area[1];
+                    break;
+                default:
+                    //只定义top坐标，水平居中
+                    that.offsetTop = config.offset;
+            }
+        } else {
+            //默认不固定弹层，offset水平垂直居中
+            that.offsetTop = dealOffset(that.offsetTop, 't');
+            that.offsetLeft = dealOffset(that.offsetLeft, 'l');
+            that.offsetLeft += win.scrollLeft();
+            that.offsetTop += win.scrollTop();
         }
 
         //设置css样式
         alertObject.css({
-        	top: that.offsetTop,
-        	left: that.offsetLeft
+            top: that.offsetTop,
+            left: that.offsetLeft
         });
 
     };
@@ -501,8 +501,8 @@
             config = that.config;
 
 
-        if(config.success){
-            config.success(alertObject,that.index);
+        if (config.success) {
+            config.success(alertObject, that.index);
         }
 
         /**
