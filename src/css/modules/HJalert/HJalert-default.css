@@ -19,8 +19,8 @@ html #HJprojectcss-skinalertcss{display: none; position: absolute; width: 1989px
 .HJproject-alert-load{background:url(loading-1.gif) center center no-repeat;}
 .HJproject-alert-ico{width:60px; height:60px;margin: 10px auto;}
 
-.HJproject-alert-icoWrapper{height:80px;width:60px;text-align:center;}
-.HJproject-alert-tipsTitle{height: 30px;line-height: 30px;text-align: center;font-size: 30px; margin-bottom: -10px;font-family: initial; font-weight: bold;}
+.HJproject-alert-icoWrapper{height:85px;width:60px;text-align:center;}
+.HJproject-alert-tipsTitle{height: 35px;line-height: 35px;text-align: center;font-size: 30px; margin-bottom: -10px;font-family: initial; font-weight: bold;}
 .HJproject-alert-tipsIcon{height: 5px;display: block;border-radius: 2px;position: absolute; z-index: 2;}
 .HJproject-alert-tipsIcon0{background-color: #A5DC86;}
 .HJproject-alert-tipsIcon1{background-color: #F27474}
