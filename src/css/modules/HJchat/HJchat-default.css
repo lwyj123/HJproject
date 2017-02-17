@@ -573,13 +573,13 @@ body .HJproject-HJchat-chat .HJproject-alert-content {
 
 .HJchat-chat-title {
     position: absolute;
-    top: -80px;
-    height: 80px;
+	top: -43px;
+	height: 43px;
 }
 
 .HJchat-chat-other {
     position: relative;
-    top: 15px;
+    line-height: 43px;
     left: 15px;
     padding-left: 60px;
     cursor: default;

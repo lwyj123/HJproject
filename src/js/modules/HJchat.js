@@ -12,7 +12,7 @@
     "use strict";
     var v = '0.0.1';
     var $ = window.jquery;
-    var layer = window.HJalert;
+    var HJalert = window.HJalert;
     var laytpl = HJproject.laytpl;
     var device = HJproject.device();
 
@@ -269,7 +269,7 @@
         if (chat[0]) {
             var list = HJchatChat.find('.HJchat-chat-list');
             var listThat = list.find('.HJchat-chatlist-' + data.type + data.id);
-            var hasFull = HJchatChat.find('.HJproject-layer-max').hasClass('HJproject-layer-maxmin');
+            var hasFull = HJchatChat.find('.HJproject-HJalert-max').hasClass('HJproject-HJalert-maxmin');
             var chatBox = chat.children('.HJchat-chat-box');
 
             //如果是最小化，则还原窗口
@@ -314,15 +314,15 @@
             anim: data.anim || 0,
             closeBtn: cache.base.brief ? false : 1,
             content: laytpl('<ul class="HJproject-unselect HJchat-chat-list">' + elemChatList + '</ul><div class="HJchat-chat-box">' + elemChatTpl + '</div>').render(render),
-            success: function(layero) {
-                HJchatChat = layero;
+            success: function(HJalerto) {
+                HJchatChat = HJalerto;
 
-                layero.css({
+                HJalerto.css({
                     'min-width': '500px',
                     'min-height': '420px'
                 });
 
-                typeof data.success === 'function' && data.success(layero);
+                typeof data.success === 'function' && data.success(HJalerto);
 
 
                 viewChatlog();
@@ -334,10 +334,10 @@
                 });
 
                 //查看大图
-                layero.on('dblclick', '.HJproject-HJchat-photos', function() {
+                HJalerto.on('dblclick', '.HJproject-HJchat-photos', function() {
                     var src = this.src;
-                    layer.close(popchat.photosIndex);
-                    layer.photos({
+                    HJalert.close(popchat.photosIndex);
+                    HJalert.photos({
                         photos: {
                             data: [{
                                 "alt": "大图模式",
@@ -348,14 +348,14 @@
                         closeBtn: 2,
                         anim: 0,
                         resize: false,
-                        success: function(layero, index) {
+                        success: function(HJalerto, index) {
                             popchat.photosIndex = index;
                         }
                     });
                 });
             },
-            full: function(layero) {
-                layer.style(index, {
+            full: function(HJalerto) {
+                HJalert.style(index, {
                     width: '100%',
                     height: '100%'
                 }, true);
@@ -365,7 +365,7 @@
                 return false;
             },
             end: function() {
-                layer.closeAll('tips');
+                HJalert.closeAll('tips');
                 HJchatChat = null;
             }
         });
@@ -381,8 +381,8 @@
         if (HJchatChat && !newMsg) {
             HJchatChat.hide();
         }
-        layer.close(setChatMin.index);
-        setChatMin.index = layer.open({
+        HJalert.close(setChatMin.index);
+        setChatMin.index = HJalert.open({
             type: 1,
             title: false,
             shade: false,
@@ -393,17 +393,17 @@
             resize: false,
             area: ['182px', '50px'],
             content: '<img id="HJproject-HJchat-min" src="' + thatChat.avatar + '"><span>' + thatChat.name + '</span>',
-            success: function(layero, index) {
-                if (!newMsg) HJchatMin = layero;
+            success: function(HJalerto, index) {
+                if (!newMsg) HJchatMin = HJalerto;
 
                 if (base.minRight) {
-                    layer.style(index, {
-                        left: $(window).width() - layero.outerWidth() - parseFloat(base.minRight)
+                    HJalert.style(index, {
+                        left: $(window).width() - HJalerto.outerWidth() - parseFloat(base.minRight)
                     });
                 }
 
-                layero.find('.HJproject-layer-content span').on('click', function() {
-                    layer.close(index);
+                HJalerto.find('.HJproject-HJalert-content span').on('click', function() {
+                    HJalert.close(index);
                     newMsg ? HJproject.each(cache.chat, function(i, item) {
                         popchat(item);
                     }) : HJchatChat.show();
@@ -412,7 +412,7 @@
                         chatListMore();
                     }
                 });
-                layero.find('.HJproject-layer-content img').on('click', function(e) {
+                HJalerto.find('.HJproject-HJalert-content img').on('click', function(e) {
                     stope(e);
                 });
             }
@@ -458,7 +458,7 @@
         if (data.content.replace(/\s/g, '') !== '') {
 
             if (data.content.length > maxLength) {
-                return layer.msg('内容最长不能超过' + maxLength + '个字符')
+                return HJalert.msg('内容最长不能超过' + maxLength + '个字符')
             }
 
             ul.append(laytpl(elemChatMain).render(data));
@@ -568,9 +568,9 @@
             //接受到的消息不在当前Tab
             var thatChat = thisChat();
             if (thatChat.data.type + thatChat.data.id !== data.type + data.id) {
-                elem.addClass('HJproject-anim layer-anim-06');
+                elem.addClass('HJproject-anim HJalert-anim-06');
                 setTimeout(function() {
-                    elem.removeClass('HJproject-anim layer-anim-06')
+                    elem.removeClass('HJproject-anim HJalert-anim-06')
                 }, 300);
             }
 
@@ -694,7 +694,7 @@
         },
         //关于
         about: function() {
-            layer.alert('版本： ' + v + '<br>当前版本基于HJchat魔改，当前' + v + '版权所有：<a href="http://HJchat.HJproject.com" target="_blank">HJchat.HJproject.com</a>', {
+            HJalert.alert('版本： ' + v + '<br>当前版本基于HJchat魔改，当前' + v + '版权所有：<a href="http://HJchat.HJproject.com" target="_blank">HJchat.HJproject.com</a>', {
                 title: '关于 LayIM',
                 shade: false
             });
@@ -752,7 +752,7 @@
                         }
                         sendMessage();
                     } else {
-                        layer.msg(res.msg || '上传失败');
+                        HJalert.msg(res.msg || '上传失败');
                     }
                 }
             });
