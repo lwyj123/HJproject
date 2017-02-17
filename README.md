@@ -3,6 +3,9 @@
 
 ---
 ##ChangeLog
+2017/2/17
+HJtags开坑，HJchat即将完成。
+
 
 2017/2/10
 HJtemplate v0.0.2 JS模板引擎
