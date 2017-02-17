@@ -12,6 +12,7 @@
     <script src="../src/js/lib/jquery.js"></script>
     <script src="../src/js/modules/HJalert.js"></script>
     <script src="../src/js/modules/HJtemplate.js"></script>
+    <script src="../src/js/modules/HJtemplate.js"></script>
     <script src="../src/HJproject.js"></script>
     <script>
     var cssname = 'HJchat-default.css';
@@ -106,8 +107,6 @@
         chat: []
     };
     cache = $.extend(cache, obj)
-        //换肤模版
-    var elemSkinTpl = ['<ul class="layui-layim-skin">', '{{# layui.each(d.skin, function(index, item){ }}', '{{# }); }}', '</ul>'].join('');
 
     //聊天主模板
     var elemChatTpl = ['<div style="display: block;" class="layim-chat layim-chat-{{d.data.type}}">', '<div class="layui-unselect layim-chat-title">', '<div class="layim-chat-other">', '<span class="layim-chat-username">{{ d.data.name||"佚名" }} </span>', '<p class="layim-chat-status"></p>', '</div>', '</div>', '<div class="layim-chat-main">', '<ul></ul>', '</div>', '<div class="layim-chat-footer">', '<div class="layui-unselect layim-chat-tool" data-json="{{encodeURIComponent(JSON.stringify(d.data))}}">', '<span class="layui-icon layim-tool-face" title="选择表情" layim-event="face">&#xe60c;</span>', '{{# if(d.base && d.base.uploadImage){ }}', '<span class="layui-icon layim-tool-image" title="上传图片" layim-event="image">&#xe60d;<input type="file" name="file"></span>', '{{# layui.each(d.base.tool, function(index, item){ }}', '<span class="layui-icon layim-tool-{{item.alias}}" title="{{item.title}}" layim-event="extend" lay-filter="{{ item.alias }}">{{item.icon}}</span>', '{{# }); }}', '{{# }; }}', '</div>', '<div class="layim-chat-textarea"><textarea></textarea></div>', '<div class="layim-chat-bottom">', '<div class="layim-chat-send">', '{{# if(!d.base.brief){ }}', '<span class="layim-send-close" layim-event="closeThisChat">关闭</span>', '{{# } }}', '<span class="layim-send-btn" layim-event="send">发送</span>', '</div>', '</div>', '</div>', '</div>'].join('');

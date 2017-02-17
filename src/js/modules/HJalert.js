@@ -218,6 +218,7 @@
             //+ (config.type == 'dialog' && config.icon != -1 ? '<i class="HJproject-alert-ico HJproject-alert-ico'+config.icon + '"></i>' : '')
             + (function() {
                 var rt = '';
+
                 if (config.type === 'page') {
                     rt += conType ? '' : (config.content || '');
                 } else if (config.type === 'dialog') {
@@ -226,6 +227,8 @@
                     } else {
                         rt += conType ? '<div class="HJproject-alert-tipsContent">' + (config.content[0] || '') + '</div>' : (config.content || '');
                     }
+                } else {
+                    rt += config.content;
                 }
                 return rt + '</div>';
             }())

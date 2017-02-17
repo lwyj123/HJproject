@@ -5,7 +5,7 @@
  @Site：
  @License：
     
-基于贤心layim简化的，用于chatbot。
+基于贤心HJchat简化的，用于chatbot。
  */
 
 ! function(window, undefined) {
@@ -13,11 +13,11 @@
     var v = '0.0.1';
     var $ = window.jquery;
     var layer = window.HJalert;
-    var laytpl = layui.laytpl;
-    var device = layui.device();
+    var laytpl = HJproject.laytpl;
+    var device = HJproject.device();
 
-    var SHOW = 'layui-show',
-        THIS = 'layim-this',
+    var SHOW = 'HJproject-show',
+        THIS = 'HJchat-this',
         MAX_ITEM = 20;
 
     //回调
@@ -26,9 +26,9 @@
     //对外API
     var LAYIM = function() {
         this.v = v;
-        $('body').on('click', '*[layim-event]', function(e) {
+        $('body').on('click', '*[HJchat-event]', function(e) {
             var othis = $(this);
-            var methid = othis.attr('layim-event');
+            var methid = othis.attr('HJchat-event');
             events[methid] ? events[methid].call(this, othis, e) : '';
         });
     };
@@ -39,16 +39,8 @@
      * @return {Object}         返回this便于链式调用
      */
     LAYIM.prototype.config = function(options) {
-        var skin = [];
-        layui.each(Array(5), function(index) {
-            skin.push(layui.cache.dir + 'css/modules/layim/skin/' + (index + 1) + '.jpg')
-        });
+
         options = options || {};
-        options.skin = options.skin || [];
-        layui.each(options.skin, function(index, item) {
-            skin.unshift(item);
-        });
-        options.skin = skin;
         options = $.extend({
             isfriend: !0,
         }, options);
@@ -92,7 +84,7 @@
     LAYIM.prototype.setChatStatus = function(str) {
         var thatChat = thisChat();
         if (!thatChat) return;
-        var status = thatChat.elem.find('.layim-chat-status');
+        var status = thatChat.elem.find('.HJchat-chat-status');
         status.html(str);
         return this;
     };
@@ -114,13 +106,13 @@
 
     //设置好友在线/离线状态
     LAYIM.prototype.setFriendStatus = function(id, type) {
-        var list = $('#layim-friend' + id);
-        list[type === 'online' ? 'removeClass' : 'addClass']('layim-list-gray');
+        var list = $('#HJchat-friend' + id);
+        list[type === 'online' ? 'removeClass' : 'addClass']('HJchat-list-gray');
     };
 
     //解析聊天内容
     LAYIM.prototype.content = function(content) {
-        return layui.data.content(content);
+        return HJproject.data.content(content);
     };
 
 
@@ -134,27 +126,25 @@
         options = options || {};
         options.item = options.item || ('d.' + options.type);
 
-        return ['{{# var length = 0; layui.each(' + options.item + ', function(i, data){ length++; }}', '<li layim-event="chat" data-type="' + options.type + '" data-index="{{ ' + (options.index || 'i') + ' }}" id="layim-' + options.type + '{{ data.id }}" {{ data.status === "offline" ? "class=layim-list-gray" : "" }}><img src="{{ data.avatar }}"><span>{{ data.username||data.name||"佚名" }}</span><p>{{ data.remark||data.sign||"" }}</p></li>', '{{# }); if(length === 0){ }}', '<li class="layim-null">' + (nodata[options.type] || "暂无数据") + '</li>', '{{# } }}'].join('');
+        return ['{{# var length = 0; HJproject.each(' + options.item + ', function(i, data){ length++; }}', '<li HJchat-event="chat" data-type="' + options.type + '" data-index="{{ ' + (options.index || 'i') + ' }}" id="HJchat-' + options.type + '{{ data.id }}" {{ data.status === "offline" ? "class=HJchat-list-gray" : "" }}><img src="{{ data.avatar }}"><span>{{ data.username||data.name||"佚名" }}</span><p>{{ data.remark||data.sign||"" }}</p></li>', '{{# }); if(length === 0){ }}', '<li class="HJchat-null">' + (nodata[options.type] || "暂无数据") + '</li>', '{{# } }}'].join('');
     };
 
-    var elemTpl = ['<div class="layui-layim-main">', '<div class="layui-layim-info">', '<div class="layui-layim-user">{{ d.mine.username }}</div>', '<div class="layui-layim-status">', '{{# if(d.mine.status === "online"){ }}', '<span class="layui-icon layim-status-online" layim-event="status" lay-type="show">&#xe617;</span>', '{{# } else if(d.mine.status === "hide") { }}', '<span class="layui-icon layim-status-hide" layim-event="status" lay-type="show">&#xe60f;</span>', '{{# } }}', '<ul class="layui-anim layim-menu-box">', '<li {{d.mine.status === "online" ? "class=layim-this" : ""}} layim-event="status" lay-type="online"><i class="layui-icon">&#xe618;</i><cite class="layui-icon layim-status-online">&#xe617;</cite>在线</li>', '<li {{d.mine.status === "hide" ? "class=layim-this" : ""}} layim-event="status" lay-type="hide"><i class="layui-icon">&#xe618;</i><cite class="layui-icon layim-status-hide">&#xe60f;</cite>隐身</li>', '</ul>', '</div>', '<input class="layui-layim-remark" placeholder="编辑签名" value="{{ d.mine.remark||d.mine.sign||"" }}"></p>', '</div>', '<ul class="layui-unselect layui-layim-tab{{# if(!d.base.isfriend){ }}', ' layim-tab-two', '{{# } }}">', '<li class="layui-icon', '{{# if(!d.base.isfriend){ }}', ' layim-hide', '{{# } else { }}', ' layim-this', '{{# } }}', '" title="联系人" layim-event="tab" lay-type="friend">&#xe612;</li>', '<li class="layui-icon" title="历史会话" layim-event="tab" lay-type="history">&#xe611;</li>', '</ul>', '<ul class="layui-unselect layim-tab-content {{# if(d.base.isfriend){ }}layui-show{{# } }} layim-list-friend">', '{{# layui.each(d.friend, function(index, item){ var spread = d.local["spread"+index]; }}', '<li>', '<h5 layim-event="spread" lay-type="{{ spread }}"><i class="layui-icon">{{# if(spread === "true"){ }}&#xe61a;{{# } else {  }}&#xe602;{{# } }}</i><em>(<cite class="layim-count"> {{ (item.list||[]).length }}</cite>)</em></h5>', '<ul class="layui-layim-list {{# if(spread === "true"){ }}', ' layui-show', '{{# } }}">', listTpl({
+    var elemTpl = ['<div class="HJproject-HJchat-main">', '<div class="HJproject-HJchat-info">', '<div class="HJproject-HJchat-user">{{ d.mine.username }}</div>', '<div class="HJproject-HJchat-status">', '{{# if(d.mine.status === "online"){ }}', '<span class="HJproject-icon HJchat-status-online" HJchat-event="status" lay-type="show">&#xe617;</span>', '{{# } else if(d.mine.status === "hide") { }}', '<span class="HJproject-icon HJchat-status-hide" HJchat-event="status" lay-type="show">&#xe60f;</span>', '{{# } }}', '<ul class="HJproject-anim HJchat-menu-box">', '<li {{d.mine.status === "online" ? "class=HJchat-this" : ""}} HJchat-event="status" lay-type="online"><i class="HJproject-icon">&#xe618;</i><cite class="HJproject-icon HJchat-status-online">&#xe617;</cite>在线</li>', '<li {{d.mine.status === "hide" ? "class=HJchat-this" : ""}} HJchat-event="status" lay-type="hide"><i class="HJproject-icon">&#xe618;</i><cite class="HJproject-icon HJchat-status-hide">&#xe60f;</cite>隐身</li>', '</ul>', '</div>', '<input class="HJproject-HJchat-remark" placeholder="编辑签名" value="{{ d.mine.remark||d.mine.sign||"" }}"></p>', '</div>', '<ul class="HJproject-unselect HJproject-HJchat-tab{{# if(!d.base.isfriend){ }}', ' HJchat-tab-two', '{{# } }}">', '<li class="HJproject-icon', '{{# if(!d.base.isfriend){ }}', ' HJchat-hide', '{{# } else { }}', ' HJchat-this', '{{# } }}', '" title="联系人" HJchat-event="tab" lay-type="friend">&#xe612;</li>', '<li class="HJproject-icon" title="历史会话" HJchat-event="tab" lay-type="history">&#xe611;</li>', '</ul>', '<ul class="HJproject-unselect HJchat-tab-content {{# if(d.base.isfriend){ }}HJproject-show{{# } }} HJchat-list-friend">', '{{# HJproject.each(d.friend, function(index, item){ var spread = d.local["spread"+index]; }}', '<li>', '<h5 HJchat-event="spread" lay-type="{{ spread }}"><i class="HJproject-icon">{{# if(spread === "true"){ }}&#xe61a;{{# } else {  }}&#xe602;{{# } }}</i><em>(<cite class="HJchat-count"> {{ (item.list||[]).length }}</cite>)</em></h5>', '<ul class="HJproject-HJchat-list {{# if(spread === "true"){ }}', ' HJproject-show', '{{# } }}">', listTpl({
         type: "friend",
         item: "item.list",
         index: "index"
-    }), '</ul>', '</li>', '</ul>', '<ul class="layui-unselect layim-tab-content  {{# if(!d.base.isfriend){ }}layui-show{{# } }}">', '<li>', '<ul class="layui-layim-list layui-show layim-list-history">', listTpl({
+    }), '</ul>', '</li>', '</ul>', '<ul class="HJproject-unselect HJchat-tab-content  {{# if(!d.base.isfriend){ }}HJproject-show{{# } }}">', '<li>', '<ul class="HJproject-HJchat-list HJproject-show HJchat-list-history">', listTpl({
         type: 'history'
-    }), '</ul>', '</li>', '</ul>', '<ul class="layui-unselect layim-tab-content">', '<li>', '<ul class="layui-layim-list layui-show" id="layui-layim-search"></ul>', '</li>', '</ul>', '<ul class="layui-unselect layui-layim-tool">', '<li class="layui-icon layim-tool-search" layim-event="search" title="搜索">&#xe615;</li>', '{{# if(d.base.msgbox){ }}', '<li class="layui-icon layim-tool-msgbox" layim-event="msgbox" title="消息盒子">&#xe645;<span class="layui-anim"></span></li>', '{{# } }}', '{{# if(d.base.find){ }}', '<li class="layui-icon layim-tool-find" layim-event="find" title="查找">&#xe608;</li>', '{{# } }}', '<li class="layui-icon layim-tool-skin" layim-event="skin" title="更换背景">&#xe61b;</li>', '{{# if(!d.base.copyright){ }}', '<li class="layui-icon layim-tool-about" layim-event="about" title="关于">&#xe60b;</li>', '{{# } }}', '</ul>', '<div class="layui-layim-search"><input><label class="layui-icon" layim-event="closeSearch">&#x1007;</label></div>', '</div>'].join('');
+    }), '</ul>', '</li>', '</ul>', '<ul class="HJproject-unselect HJchat-tab-content">', '<li>', '<ul class="HJproject-HJchat-list HJproject-show" id="HJproject-HJchat-search"></ul>', '</li>', '</ul>', '<ul class="HJproject-unselect HJproject-HJchat-tool">', '<li class="HJproject-icon HJchat-tool-search" HJchat-event="search" title="搜索">&#xe615;</li>', '{{# if(d.base.msgbox){ }}', '<li class="HJproject-icon HJchat-tool-msgbox" HJchat-event="msgbox" title="消息盒子">&#xe645;<span class="HJproject-anim"></span></li>', '{{# } }}', '{{# if(d.base.find){ }}', '<li class="HJproject-icon HJchat-tool-find" HJchat-event="find" title="查找">&#xe608;</li>', '{{# } }}', '{{# if(!d.base.copyright){ }}', '<li class="HJproject-icon HJchat-tool-about" HJchat-event="about" title="关于">&#xe60b;</li>', '{{# } }}', '</ul>', '<div class="HJproject-HJchat-search"><input><label class="HJproject-icon" HJchat-event="closeSearch">&#x1007;</label></div>', '</div>'].join('');
 
-    //换肤模版
-    var elemSkinTpl = ['<ul class="layui-layim-skin">', '{{# layui.each(d.skin, function(index, item){ }}', '{{# }); }}', '</ul>'].join('');
-
+ 
     //聊天主模板
-    var elemChatTpl = ['<div style="display: block;" class="layim-chat layim-chat-{{d.data.type}}">', '<div class="layui-unselect layim-chat-title">', '<div class="layim-chat-other">', '<span class="layim-chat-username">{{ d.data.name||"佚名" }} </span>', '<p class="layim-chat-status"></p>', '</div>', '</div>', '<div class="layim-chat-main">', '<ul></ul>', '</div>', '<div class="layim-chat-footer">', '<div class="layui-unselect layim-chat-tool" data-json="{{encodeURIComponent(JSON.stringify(d.data))}}">', '<span class="layui-icon layim-tool-face" title="选择表情" layim-event="face">&#xe60c;</span>', '{{# if(d.base && d.base.uploadImage){ }}', '<span class="layui-icon layim-tool-image" title="上传图片" layim-event="image">&#xe60d;<input type="file" name="file"></span>', '{{# layui.each(d.base.tool, function(index, item){ }}', '<span class="layui-icon layim-tool-{{item.alias}}" title="{{item.title}}" layim-event="extend" lay-filter="{{ item.alias }}">{{item.icon}}</span>', '{{# }); }}', '{{# }; }}', '</div>', '<div class="layim-chat-textarea"><textarea></textarea></div>', '<div class="layim-chat-bottom">', '<div class="layim-chat-send">', '{{# if(!d.base.brief){ }}', '<span class="layim-send-close" layim-event="closeThisChat">关闭</span>', '{{# } }}', '<span class="layim-send-btn" layim-event="send">发送</span>', '</div>', '</div>', '</div>', '</div>'].join('');
+    var elemChatTpl = ['<div style="display: block;" class="HJchat-chat HJchat-chat-{{d.data.type}}">', '<div class="HJproject-unselect HJchat-chat-title">', '<div class="HJchat-chat-other">', '<span class="HJchat-chat-username">{{ d.data.name||"佚名" }} </span>', '<p class="HJchat-chat-status"></p>', '</div>', '</div>', '<div class="HJchat-chat-main">', '<ul></ul>', '</div>', '<div class="HJchat-chat-footer">', '<div class="HJproject-unselect HJchat-chat-tool" data-json="{{encodeURIComponent(JSON.stringify(d.data))}}">', '<span class="HJproject-icon HJchat-tool-face" title="选择表情" HJchat-event="face">&#xe60c;</span>', '{{# if(d.base && d.base.uploadImage){ }}', '<span class="HJproject-icon HJchat-tool-image" title="上传图片" HJchat-event="image">&#xe60d;<input type="file" name="file"></span>', '{{# HJproject.each(d.base.tool, function(index, item){ }}', '<span class="HJproject-icon HJchat-tool-{{item.alias}}" title="{{item.title}}" HJchat-event="extend" lay-filter="{{ item.alias }}">{{item.icon}}</span>', '{{# }); }}', '{{# }; }}', '</div>', '<div class="HJchat-chat-textarea"><textarea></textarea></div>', '<div class="HJchat-chat-bottom">', '<div class="HJchat-chat-send">', '{{# if(!d.base.brief){ }}', '<span class="HJchat-send-close" HJchat-event="closeThisChat">关闭</span>', '{{# } }}', '<span class="HJchat-send-btn" HJchat-event="send">发送</span>', '</div>', '</div>', '</div>', '</div>'].join('');
 
     //聊天内容列表模版
-    var elemChatMain = ['<li {{ d.mine ? "class=layim-chat-mine" : "" }} {{# if(d.cid){ }}data-cid="{{d.cid}}"{{# } }}>', '<div class="layim-chat-user"><img src="{{ d.avatar }}"><cite>', '{{# if(d.mine){ }}', '<i>{{ layui.data.date(d.timestamp) }}</i>{{ d.username||"佚名" }}', '{{# } else { }}', '{{ d.username||"佚名" }}<i>{{ layui.data.date(d.timestamp) }}</i>', '{{# } }}', '</cite></div>', '<div class="layim-chat-text">{{ layui.data.content(d.content||"&nbsp") }}</div>', '</li>'].join('');
+    var elemChatMain = ['<li {{ d.mine ? "class=HJchat-chat-mine" : "" }} {{# if(d.cid){ }}data-cid="{{d.cid}}"{{# } }}>', '<div class="HJchat-chat-user"><img src="{{ d.avatar }}"><cite>', '{{# if(d.mine){ }}', '<i>{{ HJproject.data.date(d.timestamp) }}</i>{{ d.username||"佚名" }}', '{{# } else { }}', '{{ d.username||"佚名" }}<i>{{ HJproject.data.date(d.timestamp) }}</i>', '{{# } }}', '</cite></div>', '<div class="HJchat-chat-text">{{ HJproject.data.content(d.content||"&nbsp") }}</div>', '</li>'].join('');
 
-    var elemChatList = '<li class="layim-chatlist-{{ d.data.type }}{{ d.data.id }} layim-this" layim-event="tabChat"><img src="{{ d.data.avatar }}"><span>{{ d.data.name||"佚名" }}</span>{{# if(!d.base.brief){ }}<i class="layui-icon" layim-event="closeChat">&#x1007;</i>{{# } }}</li>';
+    var elemChatList = '<li class="HJchat-chatlist-{{ d.data.type }}{{ d.data.id }} HJchat-this" HJchat-event="tabChat"><img src="{{ d.data.avatar }}"><span>{{ d.data.name||"佚名" }}</span>{{# if(!d.base.brief){ }}<i class="HJproject-icon" HJchat-event="closeChat">&#x1007;</i>{{# } }}</li>';
 
     //补齐数位
     var digit = function(num) {
@@ -162,7 +152,7 @@
     };
 
     //转换时间
-    layui.data.date = function(timestamp) {
+    HJproject.data.date = function(timestamp) {
         var d = new Date(timestamp || new Date());
         return d.getFullYear() + '-' + digit(d.getMonth() + 1) + '-' + digit(d.getDate()) + ' ' + digit(d.getHours()) + ':' + digit(d.getMinutes()) + ':' + digit(d.getSeconds());
     };
@@ -172,7 +162,7 @@
      * @param  {String} content 输入的内容
      * @return {String}         转义后的内容
      */
-    layui.data.content = function(content) {
+    HJproject.data.content = function(content) {
         //支持的html标签
         var html = function(end) {
             return new RegExp('\\n*\\[' + (end || '') + '(pre|div|p|table|thead|th|tbody|tr|td|ul|li|ol|li|dl|dt|dd|h2|h3|h4|h5)([\\s\\S]*?)\\]\\n*', 'g');
@@ -185,7 +175,7 @@
             var href = (str.match(/file\(([\s\S]+?)\)\[/) || [])[1];
             var text = (str.match(/\)\[([\s\S]*?)\]/) || [])[1];
             if (!href) return str;
-            return '<a class="layui-layim-file" href="' + href + '" download target="_blank"><i class="layui-icon">&#xe61e;</i><cite>' + (text || href) + '</cite></a>';
+            return '<a class="HJproject-HJchat-file" href="' + href + '" download target="_blank"><i class="HJproject-icon">&#xe61e;</i><cite>' + (text || href) + '</cite></a>';
         })
 
         .replace(html(), '\<$1 $2\>').replace(html('/'), '\</$1\>') //转移HTML代码
@@ -220,7 +210,7 @@
     };
     var init = function(options) {
         var init = options.init || {}
-        mine = init.mine || {}, local = layui.data('layim')[mine.id] || {}, obj = {
+        mine = init.mine || {}, local = HJproject.data('HJchat')[mine.id] || {}, obj = {
             base: options,
             local: local,
             mine: mine,
@@ -228,7 +218,7 @@
         };
         var create = function(data) {
             var mine = data.mine || {};
-            var local = layui.data('layim')[mine.id] || {};
+            var local = HJproject.data('HJchat')[mine.id] || {};
             var obj = {
                 base: options, //基础配置信息                      
                 local: local, //本地数据                     
@@ -237,13 +227,13 @@
                 history: local.history || {} //历史会话信息
             };
             cache = $.extend(cache, obj);
-            layui.each(call.ready, function(index, item) {
+            HJproject.each(call.ready, function(index, item) {
                 item && item(obj);
             });
         };
         cache = $.extend(cache, obj);
         if (options.brief) {
-            return layui.each(call.ready, function(index, item) {
+            return HJproject.each(call.ready, function(index, item) {
                 item && item(obj);
             });
         };
@@ -253,8 +243,8 @@
 
     //显示聊天面板
 
-    var layimChat;
-    var layimMin;
+    var HJchatChat;
+    var HJchatMin;
     var chatIndex;
     var To = {};
     /**
@@ -265,7 +255,7 @@
     var popchat = function(data) {
         data = data || {};
 
-        var chat = $('#layui-layim-chat'),
+        var chat = $('#HJproject-HJchat-chat'),
             render = {
                 data: data,
                 base: cache.base,
@@ -277,25 +267,25 @@
         }
 
         if (chat[0]) {
-            var list = layimChat.find('.layim-chat-list');
-            var listThat = list.find('.layim-chatlist-' + data.type + data.id);
-            var hasFull = layimChat.find('.layui-layer-max').hasClass('layui-layer-maxmin');
-            var chatBox = chat.children('.layim-chat-box');
+            var list = HJchatChat.find('.HJchat-chat-list');
+            var listThat = list.find('.HJchat-chatlist-' + data.type + data.id);
+            var hasFull = HJchatChat.find('.HJproject-layer-max').hasClass('HJproject-layer-maxmin');
+            var chatBox = chat.children('.HJchat-chat-box');
 
             //如果是最小化，则还原窗口
-            if (layimChat.css('display') === 'none') {
-                layimChat.show();
+            if (HJchatChat.css('display') === 'none') {
+                HJchatChat.show();
             }
 
-            if (layimMin) {
-                HJalert.close(layimMin.attr('times'));
+            if (HJchatMin) {
+                HJalert.close(HJchatMin.attr('times'));
             }
 
             //如果出现多个聊天面板
             if (list.find('li').length === 1 && !listThat[0]) {
-                hasFull || layimChat.css('width', 800);
+                hasFull || HJchatChat.css('width', 800);
                 list.css({
-                    height: layimChat.height()
+                    height: HJchatChat.height()
                 }).show();
                 chatBox.css('margin-left', '200px');
             }
@@ -316,17 +306,16 @@
         var index = chatIndex = HJalert.open({
             type: 1,
             area: '600px',
-            skin: 'layui-box layui-layim-chat',
-            id: 'layui-layim-chat',
+            id: 'HJproject-HJchat-chat',
             title: '&#8203;',
             shade: false,
             maxmin: true,
             offset: data.offset || 'auto',
             anim: data.anim || 0,
             closeBtn: cache.base.brief ? false : 1,
-            content: laytpl('<ul class="layui-unselect layim-chat-list">' + elemChatList + '</ul><div class="layim-chat-box">' + elemChatTpl + '</div>').render(render),
+            content: laytpl('<ul class="HJproject-unselect HJchat-chat-list">' + elemChatList + '</ul><div class="HJchat-chat-box">' + elemChatTpl + '</div>').render(render),
             success: function(layero) {
-                layimChat = layero;
+                HJchatChat = layero;
 
                 layero.css({
                     'min-width': '500px',
@@ -340,12 +329,12 @@
                 showOffMessage();
 
                 //聊天窗口的切换监听
-                layui.each(call.chatChange, function(index, item) {
+                HJproject.each(call.chatChange, function(index, item) {
                     item && item(thisChat());
                 });
 
                 //查看大图
-                layero.on('dblclick', '.layui-layim-photos', function() {
+                layero.on('dblclick', '.HJproject-HJchat-photos', function() {
                     var src = this.src;
                     layer.close(popchat.photosIndex);
                     layer.photos({
@@ -377,7 +366,7 @@
             },
             end: function() {
                 layer.closeAll('tips');
-                layimChat = null;
+                HJchatChat = null;
             }
         });
         return index;
@@ -388,25 +377,24 @@
     //设置聊天窗口最小化 & 新消息提醒
     var setChatMin = function(newMsg) {
         var thatChat = newMsg || thisChat().data,
-            base = layui.layim.cache().base;
-        if (layimChat && !newMsg) {
-            layimChat.hide();
+            base = HJproject.HJchat.cache().base;
+        if (HJchatChat && !newMsg) {
+            HJchatChat.hide();
         }
         layer.close(setChatMin.index);
         setChatMin.index = layer.open({
             type: 1,
             title: false,
-            skin: 'layui-box layui-layim-min',
             shade: false,
             closeBtn: false,
             anim: thatChat.anim || 2,
             offset: 'b',
-            move: '#layui-layim-min',
+            move: '#HJproject-HJchat-min',
             resize: false,
             area: ['182px', '50px'],
-            content: '<img id="layui-layim-min" src="' + thatChat.avatar + '"><span>' + thatChat.name + '</span>',
+            content: '<img id="HJproject-HJchat-min" src="' + thatChat.avatar + '"><span>' + thatChat.name + '</span>',
             success: function(layero, index) {
-                if (!newMsg) layimMin = layero;
+                if (!newMsg) HJchatMin = layero;
 
                 if (base.minRight) {
                     layer.style(index, {
@@ -414,17 +402,17 @@
                     });
                 }
 
-                layero.find('.layui-layer-content span').on('click', function() {
+                layero.find('.HJproject-layer-content span').on('click', function() {
                     layer.close(index);
-                    newMsg ? layui.each(cache.chat, function(i, item) {
+                    newMsg ? HJproject.each(cache.chat, function(i, item) {
                         popchat(item);
-                    }) : layimChat.show();
+                    }) : HJchatChat.show();
                     if (newMsg) {
                         cache.chat = [];
                         chatListMore();
                     }
                 });
-                layero.find('.layui-layer-content img').on('click', function(e) {
+                layero.find('.HJproject-layer-content img').on('click', function(e) {
                     stope(e);
                 });
             }
@@ -444,10 +432,10 @@
 
     //获取当前聊天面板
     var thisChat = function() {
-        if (!layimChat) return;
-        var index = $('.layim-chat-list .' + THIS).index();
-        var cont = layimChat.find('.layim-chat').eq(index);
-        var to = JSON.parse(decodeURIComponent(cont.find('.layim-chat-tool').data('json')));
+        if (!HJchatChat) return;
+        var index = $('.HJchat-chat-list .' + THIS).index();
+        var cont = HJchatChat.find('.HJchat-chat').eq(index);
+        var to = JSON.parse(decodeURIComponent(cont.find('.HJchat-chat-tool').data('json')));
         return {
             elem: cont,
             data: to,
@@ -459,12 +447,12 @@
     var sendMessage = function() {
         var data = {
             username: cache.mine ? cache.mine.username : '访客',
-            avatar: cache.mine ? cache.mine.avatar : (layui.cache.dir + 'css/pc/layim/skin/logo.jpg'),
+            avatar: cache.mine ? cache.mine.avatar : (HJproject.cache.dir + 'css/pc/HJchat/skin/logo.jpg'),
             id: cache.mine ? cache.mine.id : null,
             mine: true
         };
         var thatChat = thisChat(),
-            ul = thatChat.elem.find('.layim-chat-main ul');
+            ul = thatChat.elem.find('.HJchat-chat-main ul');
         var maxLength = cache.base.maxLength || 3000;
         data.content = thatChat.textarea.val();
         if (data.content.replace(/\s/g, '') !== '') {
@@ -490,7 +478,7 @@
                 };
             pushChatlog(message);
 
-            layui.each(call.sendMessage, function(index, item) {
+            HJproject.each(call.sendMessage, function(index, item) {
                 item && item(param);
             });
         }
@@ -518,7 +506,7 @@
         getMessage = function(data) {
             data = data || {};
 
-            var elem = $('.layim-chatlist-' + data.type + data.id);
+            var elem = $('.HJchat-chatlist-' + data.type + data.id);
             var index = elem.index();
 
             data.timestamp = data.timestamp || new Date().getTime();
@@ -528,7 +516,7 @@
             data.system || pushChatlog(data);
             messageNew = JSON.parse(JSON.stringify(data));
 
-            if ((!layimChat && data.content) || index === -1) {
+            if ((!HJchatChat && data.content) || index === -1) {
                 if (cache.message[data.type + data.id]) {
                     cache.message[data.type + data.id].push(data)
                 } else {
@@ -537,8 +525,8 @@
                     //记录聊天面板队列
                     if (data.type === 'friend') {
                         var friend;
-                        layui.each(cache.friend, function(index1, item1) {
-                            layui.each(item1.list, function(index, item) {
+                        HJproject.each(cache.friend, function(index1, item1) {
+                            HJproject.each(item1.list, function(index, item) {
                                 if (item.id == data.id) {
                                     item.type = 'friend';
                                     item.name = item.username;
@@ -575,24 +563,24 @@
                 }
             }
 
-            if (!layimChat) return;
+            if (!HJchatChat) return;
 
             //接受到的消息不在当前Tab
             var thatChat = thisChat();
             if (thatChat.data.type + thatChat.data.id !== data.type + data.id) {
-                elem.addClass('layui-anim layer-anim-06');
+                elem.addClass('HJproject-anim layer-anim-06');
                 setTimeout(function() {
-                    elem.removeClass('layui-anim layer-anim-06')
+                    elem.removeClass('HJproject-anim layer-anim-06')
                 }, 300);
             }
 
-            var cont = layimChat.find('.layim-chat').eq(index);
-            var ul = cont.find('.layim-chat-main ul');
+            var cont = HJchatChat.find('.HJchat-chat').eq(index);
+            var ul = cont.find('.HJchat-chat-main ul');
 
             //系统消息
             if (data.system) {
                 if (index !== -1) {
-                    ul.append('<li class="layim-chat-system"><span>' + data.content + '</span></li>');
+                    ul.append('<li class="HJchat-chat-system"><span>' + data.content + '</span></li>');
                 }
             } else if (data.content.replace(/\s/g, '') !== '') {
                 ul.append(laytpl(elemChatMain).render(data));
@@ -603,13 +591,13 @@
 
     //存储最近MAX_ITEM条聊天记录到本地
     var pushChatlog = function(message) {
-        var local = layui.data('layim')[cache.mine.id] || {};
+        var local = HJproject.data('HJchat')[cache.mine.id] || {};
         local.chatlog = local.chatlog || {};
         var thisChatlog = local.chatlog[message.type + message.id];
         if (thisChatlog) {
             //避免浏览器多窗口时聊天记录重复保存
             var nosame;
-            layui.each(thisChatlog, function(index, item) {
+            HJproject.each(thisChatlog, function(index, item) {
                 if ((item.timestamp === message.timestamp && item.type === message.type && item.id === message.id && item.content === message.content)) {
                     nosame = true;
                 }
@@ -623,7 +611,7 @@
         } else {
             local.chatlog[message.type + message.id] = [message];
         }
-        layui.data('layim', {
+        HJproject.data('HJchat', {
             key: cache.mine.id,
             value: local
         });
@@ -631,11 +619,11 @@
 
     //渲染本地最新聊天记录到相应面板
     var viewChatlog = function() {
-        var local = layui.data('layim')[cache.mine.id] || {},
+        var local = HJproject.data('HJchat')[cache.mine.id] || {},
             thatChat = thisChat(),
             chatlog = local.chatlog || {},
-            ul = thatChat.elem.find('.layim-chat-main ul');
-        layui.each(chatlog[thatChat.data.type + thatChat.data.id], function(index, item) {
+            ul = thatChat.elem.find('.HJchat-chat-main ul');
+        HJproject.each(chatlog[thatChat.data.type + thatChat.data.id], function(index, item) {
             ul.append(laytpl(elemChatMain).render(item));
         });
         chatListMore();
@@ -644,14 +632,14 @@
     //查看更多记录
     var chatListMore = function() {
         var thatChat = thisChat(),
-            chatMain = thatChat.elem.find('.layim-chat-main');
+            chatMain = thatChat.elem.find('.HJchat-chat-main');
         var ul = chatMain.find('ul');
         var length = ul.find('li').length;
 
         if (length >= MAX_ITEM) {
             var first = ul.find('li').eq(0);
-            if (!ul.prev().hasClass('layim-chat-system')) {
-                ul.before('<div class="layim-chat-system"></div>');
+            if (!ul.prev().hasClass('HJchat-chat-system')) {
+                ul.before('<div class="HJchat-chat-system"></div>');
             }
             if (length > MAX_ITEM) {
                 first.remove();
@@ -663,7 +651,7 @@
         });
     };
 
-    var stope = layui.stope; //组件事件冒泡
+    var stope = HJproject.stope; //组件事件冒泡
 
     //在焦点处插入内容
     var focusInsert = function(obj, str) {
@@ -681,7 +669,7 @@
     };
 
     //事件
-    var anim = 'layui-anim-upbit';
+    var anim = 'HJproject-anim-upbit';
     var events = {
         //在线状态
         status: function(othis, e) {
@@ -697,49 +685,16 @@
                 var prev = othis.parent().prev();
                 othis.addClass(THIS).siblings().removeClass(THIS);
                 prev.html(othis.find('cite').html());
-                prev.removeClass('layim-status-' + (type === 'online' ? 'hide' : 'online'))
-                    .addClass('layim-status-' + type);
-                layui.each(call.online, function(index, item) {
+                prev.removeClass('HJchat-status-' + (type === 'online' ? 'hide' : 'online'))
+                    .addClass('HJchat-status-' + type);
+                HJproject.each(call.online, function(index, item) {
                     item && item(type);
                 });
             }
         },
-
-        //弹出查找页面
-        find: function() {
-            layer.close(events.find.index);
-            return events.find.index = layer.open({
-                type: 2,
-                title: '查找',
-                shade: false,
-                maxmin: true,
-                area: ['1000px', '520px'],
-                skin: 'layui-box layui-layer-border',
-                resize: false,
-                content: cache.base.find
-            });
-        },
-
-        //弹出更换背景
-        skin: function() {
-            layer.open({
-                type: 1,
-                title: '更换背景',
-                shade: false,
-                area: '300px',
-                skin: 'layui-box layui-layer-border',
-                id: 'layui-layim-skin',
-                zIndex: 66666666,
-                resize: false,
-                content: laytpl(elemSkinTpl).render({
-                    skin: cache.base.skin
-                })
-            });
-        },
-
         //关于
         about: function() {
-            layer.alert('版本： ' + v + '<br>当前版本基于layim魔改，当前' + v + '版权所有：<a href="http://layim.layui.com" target="_blank">layim.layui.com</a>', {
+            layer.alert('版本： ' + v + '<br>当前版本基于HJchat魔改，当前' + v + '版权所有：<a href="http://HJchat.HJproject.com" target="_blank">HJchat.HJproject.com</a>', {
                 title: '关于 LayIM',
                 shade: false
             });
@@ -747,7 +702,7 @@
 
         //弹出聊天面板
         chat: function(othis) {
-            var local = layui.data('layim')[cache.mine.id] || {};
+            var local = HJproject.data('HJchat')[cache.mine.id] || {};
             var type = othis.data('type'),
                 index = othis.data('index');
             var list = othis.attr('data-list') || othis.index(),
@@ -781,7 +736,7 @@
                 thatChat = thisChat(),
                 upload = cache.base[api[type]] || {};
 
-            layui.upload({
+            HJproject.upload({
                 url: upload.url || '',
                 method: upload.type,
                 elem: othis.find('input')[0],
@@ -808,7 +763,7 @@
             var filter = othis.attr('lay-filter'),
                 thatChat = thisChat();
 
-            layui.each(call['tool(' + filter + ')'], function(index, item) {
+            HJproject.each(call['tool(' + filter + ')'], function(index, item) {
                 item && item.call(othis, function(content) {
                     focusInsert(thatChat.textarea[0], content);
                 }, sendMessage, thatChat);
@@ -818,7 +773,7 @@
     };
 
     //暴露接口
-    exports('layim', new LAYIM());
+    exports('HJchat', new LAYIM());
 
 
 }(window);
