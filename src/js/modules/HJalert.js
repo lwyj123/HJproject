@@ -50,7 +50,7 @@
             var link = document.createElement('link');
             if (typeof fn === 'string') cssname = fn;
             var timeout = 0;
-            var id = 'HJcss-alert';
+            var id = cssname;
 
             link.rel = 'stylesheet';
             link.href = HJalert.cssPath + this.moduleName + '/' + cssname;

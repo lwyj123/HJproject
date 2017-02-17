@@ -11,7 +11,15 @@
 <body>
     <script src="../src/js/lib/jquery.js"></script>
     <script src="../src/js/modules/HJalert.js"></script>
+    <script src="../src/js/modules/HJtemplate.js"></script>
+    <script src="../src/HJproject.js"></script>
     <script>
+    var cssname = 'HJchat-default.css';
+
+    HJproject.link(HJalert.cssPath, undefined, cssname, 'HJchat');
+
+
+
     var data = {
         name: '在线客服-小苍',
         type: 'kefu',
@@ -88,27 +96,37 @@
         notice: true //是否开启桌面消息提醒，默认false
             //,voice: false //声音提醒，默认开启，声音文件为：default.wav
 
-        ,
-        msgbox: layui.cache.dir + 'css/modules/layim/html/msgbox.html' //消息盒子页面地址，若不开启，剔除该项即可
-            ,
-        find: layui.cache.dir + 'css/modules/layim/html/find.html' //发现页面地址，若不开启，剔除该项即可
-            ,
-        chatLog: layui.cache.dir + 'css/modules/layim/html/chatLog.html' //聊天记录页面地址，若不开启，剔除该项即可
-
     };
     var obj = {
-        base: options, //基础配置信息                      
-        local: local, //本地数据                     
-        mine: mine, //我的用户信息          
+        base: options, //基础配置信息                                             
         friend: data.friend || [], //联系人信息             
-        history: local.history || {} //历史会话信息
     };
     var cache = {
         message: {},
         chat: []
     };
     cache = $.extend(cache, obj)
-    
+        //换肤模版
+    var elemSkinTpl = ['<ul class="layui-layim-skin">', '{{# layui.each(d.skin, function(index, item){ }}', '{{# }); }}', '</ul>'].join('');
+
+    //聊天主模板
+    var elemChatTpl = ['<div style="display: block;" class="layim-chat layim-chat-{{d.data.type}}">', '<div class="layui-unselect layim-chat-title">', '<div class="layim-chat-other">', '<span class="layim-chat-username">{{ d.data.name||"佚名" }} </span>', '<p class="layim-chat-status"></p>', '</div>', '</div>', '<div class="layim-chat-main">', '<ul></ul>', '</div>', '<div class="layim-chat-footer">', '<div class="layui-unselect layim-chat-tool" data-json="{{encodeURIComponent(JSON.stringify(d.data))}}">', '<span class="layui-icon layim-tool-face" title="选择表情" layim-event="face">&#xe60c;</span>', '{{# if(d.base && d.base.uploadImage){ }}', '<span class="layui-icon layim-tool-image" title="上传图片" layim-event="image">&#xe60d;<input type="file" name="file"></span>', '{{# layui.each(d.base.tool, function(index, item){ }}', '<span class="layui-icon layim-tool-{{item.alias}}" title="{{item.title}}" layim-event="extend" lay-filter="{{ item.alias }}">{{item.icon}}</span>', '{{# }); }}', '{{# }; }}', '</div>', '<div class="layim-chat-textarea"><textarea></textarea></div>', '<div class="layim-chat-bottom">', '<div class="layim-chat-send">', '{{# if(!d.base.brief){ }}', '<span class="layim-send-close" layim-event="closeThisChat">关闭</span>', '{{# } }}', '<span class="layim-send-btn" layim-event="send">发送</span>', '</div>', '</div>', '</div>', '</div>'].join('');
+
+    //聊天内容列表模版
+    var elemChatMain = ['<li {{ d.mine ? "class=layim-chat-mine" : "" }} {{# if(d.cid){ }}data-cid="{{d.cid}}"{{# } }}>', '<div class="layim-chat-user"><img src="{{ d.avatar }}"><cite>', '{{# if(d.mine){ }}', '<i>{{ layui.data.date(d.timestamp) }}</i>{{ d.username||"佚名" }}', '{{# } else { }}', '{{ d.username||"佚名" }}<i>{{ layui.data.date(d.timestamp) }}</i>', '{{# } }}', '</cite></div>', '<div class="layim-chat-text">{{ layui.data.content(d.content||"&nbsp") }}</div>', '</li>'].join('');
+
+    var elemChatList = '<li class="layim-chatlist-{{ d.data.type }}{{ d.data.id }} layim-this" layim-event="tabChat"><img src="{{ d.data.avatar }}"><span>{{ d.data.name||"佚名" }}</span>{{# if(!d.base.brief){ }}<i class="layui-icon" layim-event="closeChat">&#x1007;</i>{{# } }}</li>';
+
+
+
+
+
+    var render = {
+        data: data,
+        base: '',
+        local: ''
+    };
+
     var index = chatIndex = HJalert.open({
         type: 1,
         area: '600px',
@@ -117,10 +135,7 @@
         title: '&#8203;',
         shade: false,
         maxmin: true,
-        offset: data.offset || 'auto',
-        anim: data.anim || 0,
-        closeBtn: cache.base.brief ? false : 1,
-        content: laytpl('<ul class="layui-unselect layim-chat-list">' + elemChatList + '</ul><div class="layim-chat-box">' + elemChatTpl + '</div>').render(render),
+        content: HJtemplate.template('<ul class="layui-unselect layim-chat-list">' + elemChatList + '</ul><div class="layim-chat-box">' + elemChatTpl + '</div>').render(render),
         success: function(layero) {
             layimChat = layero;
 
@@ -132,19 +147,12 @@
             typeof data.success === 'function' && data.success(layero);
 
 
-            viewChatlog();
-            showOffMessage();
-
-            //聊天窗口的切换监听
-            layui.each(call.chatChange, function(index, item) {
-                item && item(thisChat());
-            });
 
             //查看大图
             layero.on('dblclick', '.layui-layim-photos', function() {
                 var src = this.src;
-                layer.close(popchat.photosIndex);
-                layer.photos({
+                HJalert.close(popchat.photosIndex);
+                HJalert.photos({
                     photos: {
                         data: [{
                             "alt": "大图模式",
@@ -161,20 +169,6 @@
                 });
             });
         },
-        full: function(layero) {
-            layer.style(index, {
-                width: '100%',
-                height: '100%'
-            }, true);
-        },
-        min: function() {
-            setChatMin();
-            return false;
-        },
-        end: function() {
-            layer.closeAll('tips');
-            layimChat = null;
-        }
     });
     </script>
 </body>
