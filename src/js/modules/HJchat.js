@@ -138,13 +138,68 @@
     }), '</ul>', '</li>', '</ul>', '<ul class="HJproject-unselect HJchat-tab-content">', '<li>', '<ul class="HJproject-HJchat-list HJproject-show" id="HJproject-HJchat-search"></ul>', '</li>', '</ul>', '<ul class="HJproject-unselect HJproject-HJchat-tool">', '<li class="HJproject-icon HJchat-tool-search" HJchat-event="search" title="搜索">&#xe615;</li>', '{{# if(d.base.msgbox){ }}', '<li class="HJproject-icon HJchat-tool-msgbox" HJchat-event="msgbox" title="消息盒子">&#xe645;<span class="HJproject-anim"></span></li>', '{{# } }}', '{{# if(d.base.find){ }}', '<li class="HJproject-icon HJchat-tool-find" HJchat-event="find" title="查找">&#xe608;</li>', '{{# } }}', '{{# if(!d.base.copyright){ }}', '<li class="HJproject-icon HJchat-tool-about" HJchat-event="about" title="关于">&#xe60b;</li>', '{{# } }}', '</ul>', '<div class="HJproject-HJchat-search"><input><label class="HJproject-icon" HJchat-event="closeSearch">&#x1007;</label></div>', '</div>'].join('');
 
  
+
+    var elemChatTplFun = function() { /*
+        <div style="display: block;" class="HJchat-chat HJchat-chat-{{d.data.type}}">
+            <div class="HJproject-unselect HJchat-chat-title">
+                <div class="HJchat-chat-other">
+                    <span class="HJchat-chat-username">{{ d.data.name||"佚名" }} </span>
+                    <p class="HJchat-chat-status"></p>
+                </div>
+            </div>
+            <div class="HJchat-chat-main">
+                <ul></ul>
+            </div>
+            <div class="HJchat-chat-footer">
+                <div class="HJproject-unselect HJchat-chat-tool" data-json="{{encodeURIComponent(JSON.stringify(d.data))}}">
+                </div>
+                <div class="HJchat-chat-textarea">
+                    <textarea></textarea>
+                </div>
+                <div class="HJchat-chat-bottom">
+                    <div class="HJchat-chat-send">
+                    {{# if(!d.base.brief){ }}
+                        <span class="HJchat-send-close" HJchat-event="closeThisChat">关闭</span> 
+                    {{# } }} 
+                        <span class="HJchat-send-btn" HJchat-event="send">发送</span>
+                    </div>
+                </div> 
+            </div>
+        </div>
+    */};
+
     //聊天主模板
-    var elemChatTpl = ['<div style="display: block;" class="HJchat-chat HJchat-chat-{{d.data.type}}">', '<div class="HJproject-unselect HJchat-chat-title">', '<div class="HJchat-chat-other">', '<span class="HJchat-chat-username">{{ d.data.name||"佚名" }} </span>', '<p class="HJchat-chat-status"></p>', '</div>', '</div>', '<div class="HJchat-chat-main">', '<ul></ul>', '</div>', '<div class="HJchat-chat-footer">', '<div class="HJproject-unselect HJchat-chat-tool" data-json="{{encodeURIComponent(JSON.stringify(d.data))}}">', '<span class="HJproject-icon HJchat-tool-face" title="选择表情" HJchat-event="face">&#xe60c;</span>', '{{# if(d.base && d.base.uploadImage){ }}', '<span class="HJproject-icon HJchat-tool-image" title="上传图片" HJchat-event="image">&#xe60d;<input type="file" name="file"></span>', '{{# HJproject.each(d.base.tool, function(index, item){ }}', '<span class="HJproject-icon HJchat-tool-{{item.alias}}" title="{{item.title}}" HJchat-event="extend" lay-filter="{{ item.alias }}">{{item.icon}}</span>', '{{# }); }}', '{{# }; }}', '</div>', '<div class="HJchat-chat-textarea"><textarea></textarea></div>', '<div class="HJchat-chat-bottom">', '<div class="HJchat-chat-send">', '{{# if(!d.base.brief){ }}', '<span class="HJchat-send-close" HJchat-event="closeThisChat">关闭</span>', '{{# } }}', '<span class="HJchat-send-btn" HJchat-event="send">发送</span>', '</div>', '</div>', '</div>', '</div>'].join('');
+    var elemChatTpl = HJproject.heredoc(elemChatTplFun);
 
-    //聊天内容列表模版
-    var elemChatMain = ['<li {{ d.mine ? "class=HJchat-chat-mine" : "" }} {{# if(d.cid){ }}data-cid="{{d.cid}}"{{# } }}>', '<div class="HJchat-chat-user"><img src="{{ d.avatar }}"><cite>', '{{# if(d.mine){ }}', '<i>{{ HJproject.data.date(d.timestamp) }}</i>{{ d.username||"佚名" }}', '{{# } else { }}', '{{ d.username||"佚名" }}<i>{{ HJproject.data.date(d.timestamp) }}</i>', '{{# } }}', '</cite></div>', '<div class="HJchat-chat-text">{{ HJproject.data.content(d.content||"&nbsp") }}</div>', '</li>'].join('');
 
-    var elemChatList = '<li class="HJchat-chatlist-{{ d.data.type }}{{ d.data.id }} HJchat-this" HJchat-event="tabChat"><img src="{{ d.data.avatar }}"><span>{{ d.data.name||"佚名" }}</span>{{# if(!d.base.brief){ }}<i class="HJproject-icon" HJchat-event="closeChat">&#x1007;</i>{{# } }}</li>';
+	var elemChatMainFun = function() { /*
+		<li {{ d.mine ? "class=HJchat-chat-mine" : "" }} 
+		{{# if(d.cid){ }}
+			data-cid="{{d.cid}}"
+		{{# } }}
+		>
+			<div class="HJchat-chat-user">
+				<img src="{{ d.avatar }}">
+				<cite>
+					{{# if(d.mine){ }}
+					<i>{{ HJproject.data.date(d.timestamp) }}</i>
+					{{ d.username||"佚名" }}
+					{{# } else { }}
+					{{ d.username||"佚名" }}
+					<i>{{ HJproject.data.date(d.timestamp) }}</i>', 
+					{{# } }}
+				</cite>
+			</div>
+			<div class="HJchat-chat-text">{{ HJproject.data.content(d.content||"&nbsp") }}
+			</div>
+		</li>
+	*/};
+
+
+
+    //聊天对话模板
+    var elemChatMain = HJproject.heredoc(elemChatMainFun);
+
 
     //补齐数位
     var digit = function(num) {
@@ -292,7 +347,6 @@
 
             //打开的是非当前聊天面板，则新增面板
             if (!listThat[0]) {
-                list.append(laytpl(elemChatList).render(render));
                 chatBox.append(laytpl(elemChatTpl).render(render));
             }
 
@@ -313,7 +367,7 @@
             offset: data.offset || 'auto',
             anim: data.anim || 0,
             closeBtn: cache.base.brief ? false : 1,
-            content: laytpl('<ul class="HJproject-unselect HJchat-chat-list">' + elemChatList + '</ul><div class="HJchat-chat-box">' + elemChatTpl + '</div>').render(render),
+            content: laytpl('<div class="HJchat-chat-box">' + elemChatTpl + '</div>').render(render),
             success: function(HJalerto) {
                 HJchatChat = HJalerto;
 

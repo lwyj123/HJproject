@@ -3,6 +3,11 @@
 
 ---
 ##ChangeLog
+2017/2/18
+  更新了HJ主文件的一个方法heredoc并将link放入原型中。
+  修正HJchat的部分代码。
+
+
 2017/2/17
 HJtags开坑，HJchat即将完成。
 
