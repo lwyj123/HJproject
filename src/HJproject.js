@@ -45,4 +45,14 @@ var HJ = function(){
 
 HJ.fn = HJ.prototype;
 
+/**
+ * 巧妙的方法实现块字符串，不过要注意使用时注释符号要和function的开始和结束处于同一行
+ * @param  {Function} fn   用function包裹的目标注释块
+ * @return {String}        生成的块字符串
+ */
+HJ.fn.heredoc = function(fn) {
+    return fn.toString().split('\n').slice(1,-1).join('\n') + '\n'
+}
+
+
 }(window)
