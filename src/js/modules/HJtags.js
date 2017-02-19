@@ -20,15 +20,23 @@ HJ-tags对象属性：index,tagsList(value),id,class
 	
 	var HJtagsProto = Object.create(HTMLDivElement.prototype);
 	HJtagsProto.index = 0;
-	//保存tags
-	var Tags = new Array();
 	//更新tags
 	function updateTags(tagsHandleId){
 			
 	}
+	Array.prototype.S=String.fromCharCode(2);
+	Array.prototype.in_array=function(e){
+    	var r = new RegExp(this.S + e + this.S);
+   	 	return (r.test(this.S + this.join(this.S) + this.S));
+	};
+
+	HJtagsProto.getValue = function(HJtagsEle){
+		//return $(HJtagsEle).attr('value').split(',');
+		return HJtagsEle.tags;
+	}
 
 	function addTag(HJtagsEle){
-		if(HJtagsEle.content != ''){
+		if(HJtagsEle.content != '' && !HJtagsEle.tags.in_array(HJtagsEle.content)){
 			//追加标签
 			//var addtag = '<span class="tagSpan" id="' + content + HJtagsProto.index +'><span>' + content + '</span>&nbsp;&nbsp;<a href="#" title="removeTag">x</a></span>'; 
 			//$(tagsHandleId).prepend(addtag);
@@ -84,6 +92,8 @@ HJ-tags对象属性：index,tagsList(value),id,class
 			if(event.keyCode == '13'){
 				that.content = $(this).find('.tagInput').val();
 				addTag(that);
+				//清空输入框
+				$(this).find('.tagInput').val('');
 			}
 		});
 	};
