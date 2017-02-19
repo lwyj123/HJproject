@@ -3,6 +3,9 @@
 
 ---
 ##ChangeLog
+2017/2/19
+  完成HJtags初版，但兼容性存在问题
+
 2017/2/18
   更新了HJ主文件的一个方法heredoc并将link放入原型中。
   修正HJchat的部分代码。
