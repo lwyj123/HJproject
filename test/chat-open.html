@@ -108,13 +108,24 @@
     };
     cache = $.extend(cache, obj)
 
-
+    //原始正则
+    //  function\s*?\(\)\s*?{\s*?/\*
+    //  \*/\s*?}
     var heredoc = function(fn) {
-        return fn.toString().split('\n').slice(1,-1).join('\n') + '\n'
+        //替换开头的
+        var nohead = fn.toString()
+            .replace(new RegExp("function\\s*?\\(\\)\\s*?{\\s*?\/\\*"), '');
+        //替换结尾的，实现好蛋疼，有没有办法直接到最后一个
+        var tempIndex = nohead.lastIndexOf("*");
+        //去除了头尾，但不能保证中间的注释
+        var tempString = nohead.substring(0,tempIndex);
+        return tempString;
+
     }
 
 
-    var elemChatTplFun = function() { /*
+    var elemChatTplFun = function() { 
+    /*
         <div style="display: block;" class="HJchat-chat HJchat-chat-{{d.data.type}}">
             <div class="HJproject-unselect HJchat-chat-title">
                 <div class="HJchat-chat-other">
@@ -141,7 +152,8 @@
                 </div> 
             </div>
         </div>
-    */};
+    */
+    };
 
 
 

@@ -16,7 +16,14 @@
      * @return {String}        生成的块字符串
      */
     HJ.fn.heredoc = function(fn) {
-        return fn.toString().split('\n').slice(1, -1).join('\n') + '\n'
+        //替换开头的
+        var nohead = fn.toString()
+            .replace(new RegExp("function\\s*?\\(\\)\\s*?{\\s*?\/\\*"), '');
+        //替换结尾的，实现好蛋疼，有没有办法直接到最后一个
+        var tempIndex = nohead.lastIndexOf("*");
+        //去除了头尾，但不能保证中间的注释
+        var tempString = nohead.substring(0,tempIndex);
+        return tempString;
     }
 
     HJ.fn.link = function(href, fn, cssname, moduleName) {
