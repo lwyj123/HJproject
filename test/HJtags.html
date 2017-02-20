@@ -6,9 +6,11 @@
 </head>
 <body>
 	<script src="../src/js/lib/jquery.js"></script>
+	<script src="../src/js/lib/document-register-element.js"></script>
 	<script src="../src/js/modules/HJalert.js"></script>
 	<script src="../src/js/modules/HJtags.js"></script>
 	<script src="../src/HJproject.js"></script>
+
 	<script type="text/javascript">
 		var cssname = 'HJtags-default.css';
 
@@ -16,7 +18,7 @@
 
 		//document.body.appendChild(new HJtagsElement());
 	</script>
-	<HJ-tags value="吕飞,梁王"></HJ-tags>
-	<HJ-tags value="one,two,three"></HJ-tags>
+	<HJ-tags value="吕飞,梁王" addCallback="alert('md 这就是回调接口')"></HJ-tags>
+	<HJ-tags value="one,two,three" addCallback="alert('我不一样。我是第二个')"></HJ-tags>
 </body>
 </html>

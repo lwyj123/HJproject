@@ -9,7 +9,7 @@
 
 整个的注释：md 为了简单，我直接使用全局变量index来区分不同HJ-tags对象,很low，以后再说，改成HJalert形式
 改进版想法：
-HJ-tags对象属性：index,tagsList(value),id,class
+HJ-tags对象属性：index,tags,content.
  */
 
 !function(window,undefined){
@@ -19,6 +19,7 @@ HJ-tags对象属性：index,tagsList(value),id,class
 	//自定义html标签元素
 	
 	var HJtagsProto = Object.create(HTMLDivElement.prototype);
+	//class HJtagsElement extends HTMLDivElement{};
 	HJtagsProto.index = 0;
 	//更新tags
 	function updateTags(tagsHandleId){
@@ -35,7 +36,7 @@ HJ-tags对象属性：index,tagsList(value),id,class
 		return HJtagsEle.tags;
 	}
 
-	function addTag(HJtagsEle){
+	function addTag(HJtagsEle,callback){
 		if(HJtagsEle.content != '' && !HJtagsEle.tags.in_array(HJtagsEle.content)){
 			//追加标签
 			//var addtag = '<span class="tagSpan" id="' + content + HJtagsProto.index +'><span>' + content + '</span>&nbsp;&nbsp;<a href="#" title="removeTag">x</a></span>'; 
@@ -55,6 +56,7 @@ HJ-tags对象属性：index,tagsList(value),id,class
 			var addvalue = ($(HJtagsEle).attr('value')+ ',' + HJtagsEle.content);
 			$(HJtagsEle).attr('value',addvalue);
 			HJtagsEle.tags.push(HJtagsEle.content);
+			return callback();
 		}
 	}
 
@@ -64,7 +66,7 @@ HJ-tags对象属性：index,tagsList(value),id,class
 		HJtagsProto.index ++;
 		var tagList = new Array();
 
-		this.innerHTML = '<div class="tagsHandle tagsHandle' + HJtagsProto.index + '">' 
+		that.innerHTML = '<div class="tagsHandle tagsHandle' + HJtagsProto.index + '">' 
 		+(function(){
 			var inHtml = '';
 			//默认分割符为','号
@@ -83,6 +85,7 @@ HJ-tags对象属性：index,tagsList(value),id,class
 		//console(this.innerHTML);
 		that.index = HJtagsProto.index;
 		that.tags = tagList;
+		that.addCallback = new Function("return " + $(that).attr('addCallback'));//eval('('+$(that).attr('addCallback')+')');
 
 /*		$(that).find('a').bind('onclick',function(){
 			return removeTag(this);
@@ -91,7 +94,7 @@ HJ-tags对象属性：index,tagsList(value),id,class
 		$(that).bind('keypress',function(event){
 			if(event.keyCode == '13'){
 				that.content = $(this).find('.tagInput').val();
-				addTag(that);
+				addTag(that,that.addCallback);
 				//清空输入框
 				$(this).find('.tagInput').val('');
 			}
