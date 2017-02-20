@@ -5,7 +5,7 @@
  @Site：
  @License：
     
-基于贤心HJchat简化的，用于chatbot。
+基于贤心layim简化的，用于chatbot。
  */
 
 ! function(window, undefined) {
@@ -14,7 +14,6 @@
     var $ = window.jquery;
     var HJalert = window.HJalert;
     var laytpl = HJproject.laytpl;
-    var device = HJproject.device();
 
     var SHOW = 'HJproject-show',
         THIS = 'HJchat-this',
@@ -201,12 +200,12 @@
     var elemChatMain = HJproject.heredoc(elemChatMainFun);
 
 
-    //补齐数位
+    //补齐数位，用于日期显示
     var digit = function(num) {
         return num < 10 ? '0' + (num | 0) : num;
     };
 
-    //转换时间
+    //timestamp转换标准时间
     HJproject.data.date = function(timestamp) {
         var d = new Date(timestamp || new Date());
         return d.getFullYear() + '-' + digit(d.getMonth() + 1) + '-' + digit(d.getDate()) + ' ' + digit(d.getHours()) + ':' + digit(d.getMinutes()) + ':' + digit(d.getSeconds());
@@ -264,8 +263,10 @@
         chat: []
     };
     var init = function(options) {
-        var init = options.init || {}
-        mine = init.mine || {}, local = HJproject.data('HJchat')[mine.id] || {}, obj = {
+        var init = options.init || {};
+        var mine = init.mine || {};
+        var local = HJproject.data('HJchat')[mine.id] || {};
+        var obj = {
             base: options,
             local: local,
             mine: mine,
@@ -278,7 +279,7 @@
                 base: options, //基础配置信息                      
                 local: local, //本地数据                     
                 mine: mine, //我的用户信息          
-                friend: data.friend || [], //联系人信息             
+                server: data.server || [], //客服或机器人             
                 history: local.history || {} //历史会话信息
             };
             cache = $.extend(cache, obj);

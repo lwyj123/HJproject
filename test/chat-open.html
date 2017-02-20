@@ -10,9 +10,10 @@
 
 <body>
     <script src="../src/js/lib/jquery.js"></script>
+    <script src="../src/HJproject.js"></script>
     <script src="../src/js/modules/HJalert.js"></script>
     <script src="../src/js/modules/HJtemplate.js"></script>
-    <script src="../src/js/modules/HJtemplate.js"></script>
+    <script src="../src/js/modules/HJchat.js"></script>
     <script src="../src/HJproject.js"></script>
     <script>
     var cssname = 'HJchat-default.css';
@@ -118,41 +119,41 @@
         //替换结尾的，实现好蛋疼，有没有办法直接到最后一个
         var tempIndex = nohead.lastIndexOf("*");
         //去除了头尾，但不能保证中间的注释
-        var tempString = nohead.substring(0,tempIndex);
+        var tempString = nohead.substring(0, tempIndex);
         return tempString;
 
     }
 
 
-    var elemChatTplFun = function() { 
-    /*
-        <div style="display: block;" class="HJchat-chat HJchat-chat-{{d.data.type}}">
-            <div class="HJproject-unselect HJchat-chat-title">
-                <div class="HJchat-chat-other">
-                    <span class="HJchat-chat-username">{{ d.data.name||"佚名" }} </span>
-                    <p class="HJchat-chat-status"></p>
-                </div>
-            </div>
-            <div class="HJchat-chat-main">
-                <ul></ul>
-            </div>
-            <div class="HJchat-chat-footer">
-                <div class="HJproject-unselect HJchat-chat-tool" data-json="{{encodeURIComponent(JSON.stringify(d.data))}}">
-                </div>
-                <div class="HJchat-chat-textarea">
-                    <textarea></textarea>
-                </div>
-                <div class="HJchat-chat-bottom">
-                    <div class="HJchat-chat-send">
-                    {{# if(!d.base.brief){ }}
-                        <span class="HJchat-send-close" HJchat-event="closeThisChat">关闭</span> 
-                    {{# } }} 
-                        <span class="HJchat-send-btn" HJchat-event="send">发送</span>
+    var elemChatTplFun = function() {
+        /*
+            <div style="display: block;" class="HJchat-chat HJchat-chat-{{d.data.type}}">
+                <div class="HJproject-unselect HJchat-chat-title">
+                    <div class="HJchat-chat-other">
+                        <span class="HJchat-chat-username">{{ d.data.name||"佚名" }} </span>
+                        <p class="HJchat-chat-status"></p>
                     </div>
-                </div> 
+                </div>
+                <div class="HJchat-chat-main">
+                    <ul></ul>
+                </div>
+                <div class="HJchat-chat-footer">
+                    <div class="HJproject-unselect HJchat-chat-tool" data-json="{{encodeURIComponent(JSON.stringify(d.data))}}">
+                    </div>
+                    <div class="HJchat-chat-textarea">
+                        <textarea></textarea>
+                    </div>
+                    <div class="HJchat-chat-bottom">
+                        <div class="HJchat-chat-send">
+                        {{# if(!d.base.brief){ }}
+                            <span class="HJchat-send-close" HJchat-event="closeThisChat">关闭</span> 
+                        {{# } }} 
+                            <span class="HJchat-send-btn" HJchat-event="send">发送</span>
+                        </div>
+                    </div> 
+                </div>
             </div>
-        </div>
-    */
+        */
     };
 
 
@@ -160,9 +161,35 @@
     //聊天主模板
     var elemChatTpl = heredoc(elemChatTplFun);
 
-    //聊天内容列表模版
-    var elemChatMain = ['<li {{ d.mine ? "class=HJchat-chat-mine" : "" }} {{# if(d.cid){ }}data-cid="{{d.cid}}"{{# } }}>', '<div class="HJchat-chat-user"><img src="{{ d.avatar }}"><cite>', '{{# if(d.mine){ }}', '<i>{{ HJproject.data.date(d.timestamp) }}</i>{{ d.username||"佚名" }}', '{{# } else { }}', '{{ d.username||"佚名" }}<i>{{ HJproject.data.date(d.timestamp) }}</i>', '{{# } }}', '</cite></div>', '<div class="HJchat-chat-text">{{ HJproject.data.content(d.content||"&nbsp") }}</div>', '</li>'].join('');
+    var elemChatMainFun = function() {
+        /*
+               <li {{ d.mine ? "class=HJchat-chat-mine" : "" }} 
+               {{# if(d.cid){ }}
+                   data-cid="{{d.cid}}"
+               {{# } }}
+               >
+                   <div class="HJchat-chat-user">
+                       <img src="{{ d.avatar }}">
+                       <cite>
+                           {{# if(d.mine){ }}
+                           <i>{{ HJproject.data.date(d.timestamp) }}</i>
+                           {{ d.username||"佚名" }}
+                           {{# } else { }}
+                           {{ d.username||"佚名" }}
+                           <i>{{ HJproject.data.date(d.timestamp) }}</i>', 
+                           {{# } }}
+                       </cite>
+                   </div>
+                   <div class="HJchat-chat-text">{{ HJproject.data.content(d.content||"&nbsp") }}
+                   </div>
+               </li>
+           */
+    };
 
+
+
+    //聊天对话模板
+    var elemChatMain = HJproject.heredoc(elemChatMainFun);
 
 
 

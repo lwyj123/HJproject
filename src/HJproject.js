@@ -1,4 +1,3 @@
-
 ;
 ! function(win) {
 
@@ -22,10 +21,11 @@
         //替换结尾的，实现好蛋疼，有没有办法直接到最后一个
         var tempIndex = nohead.lastIndexOf("*");
         //去除了头尾，但不能保证中间的注释
-        var tempString = nohead.substring(0,tempIndex);
+        var tempString = nohead.substring(0, tempIndex);
         return tempString;
     }
 
+    //动态加载css
     HJ.fn.link = function(href, fn, cssname, moduleName) {
 
         //未设置路径，则不加载css
@@ -57,7 +57,36 @@
 
     };
 
+    /**
+     * 本地存储，封装localStorage
+     * @param  {String} table         取对应表
+     * @param  {Object or String}     settings 可选
+     * @return {unknown or Object}    若settiings设置了key就返回对应值，没有返回取的表
+     */
+    HJ.fn.data = function(table, settings) {
+        table = table || 'HJproject';
 
+        if (!window.JSON || !window.JSON.parse) return;
+
+        //如果settings为null，则删除表
+        if (settings === null) {
+            return delete localStorage[table];
+        }
+
+        settings = typeof settings === 'object' ? settings : { key: settings };
+
+        try {
+            var data = JSON.parse(localStorage[table]);
+        } catch (e) {
+            var data = {};
+        }
+
+        if (settings.value) data[settings.key] = settings.value;
+        if (settings.remove) delete data[settings.key];
+        localStorage[table] = JSON.stringify(data);
+
+        return settings.key ? data[settings.key] : data;
+    };
 
     win.HJproject = new HJ();
 
