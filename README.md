@@ -5,6 +5,9 @@
 ##ChangeLog
 2017/2/20
   heredoc优化了一下，现在即使代码压缩也能正常使用，但如果有多个块注释貌似会GG
+  HJtags 加了回调
+  HJproject添加了本地存储
+  HJchat做了一些修正
 
 
 2017/2/19
