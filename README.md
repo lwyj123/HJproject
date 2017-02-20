@@ -1,6 +1,6 @@
 # HJproject
-华击工程，developing
-
+  华击工程，developing
+  本工程的目标是构建一组readable和extendible的组件代码
 ---
 ##ChangeLog
 2017/2/19
