@@ -5,6 +5,7 @@
 ##ChangeLog
 2017/2/21
   HJchat基本完工
+  HJtags基本完工
 
 
 2017/2/20
