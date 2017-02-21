@@ -3,6 +3,10 @@
   本工程的目标是构建一组readable和extendible的组件代码
 ---
 ##ChangeLog
+2017/2/21
+  HJchat基本完工
+
+
 2017/2/20
   heredoc优化了一下，现在即使代码压缩也能正常使用，但如果有多个块注释貌似会GG
   HJtags 加了回调
