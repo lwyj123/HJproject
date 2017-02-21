@@ -56,6 +56,30 @@
         }());
 
     };
+    /**
+     * 遍历功能
+     * @param  {[type]}   obj [description]
+     * @param  {Function} fn  [description]
+     * @return {[type]}       [description]
+     */
+    HJ.fn.each = function(obj, fn) {
+        var that = this,
+            key;
+        if (typeof fn !== 'function') return that;
+        obj = obj || [];
+        if (obj.constructor === Object) {
+            for (key in obj) {
+                if (fn.call(obj[key], key, obj[key])) break;
+            }
+        } else {
+            for (key = 0; key < obj.length; key++) {
+                if (fn.call(obj[key], key, obj[key])) break;
+            }
+        }
+        return that;
+    };
+
+
 
     /**
      * 本地存储，封装localStorage

@@ -11,9 +11,10 @@
 ! function(window, undefined) {
     "use strict";
     var v = '0.0.1';
-    var $ = window.jquery;
+    var $ = window.jQuery;
+    var HJproject = window.HJproject;
     var HJalert = window.HJalert;
-    var laytpl = HJproject.laytpl;
+    var template = HJtemplate.template;
 
     var SHOW = 'HJproject-show',
         THIS = 'HJchat-this',
@@ -348,7 +349,7 @@
 
             //打开的是非当前聊天面板，则新增面板
             if (!listThat[0]) {
-                chatBox.append(laytpl(elemChatTpl).render(render));
+                chatBox.append(template(elemChatTpl).render(render));
             }
 
             listThat[0] || viewChatlog();
@@ -368,7 +369,7 @@
             offset: data.offset || 'auto',
             anim: data.anim || 0,
             closeBtn: cache.base.brief ? false : 1,
-            content: laytpl('<div class="HJchat-chat-box">' + elemChatTpl + '</div>').render(render),
+            content: template('<div class="HJchat-chat-box">' + elemChatTpl + '</div>').render(render),
             success: function(HJalerto) {
                 HJchatChat = HJalerto;
 
@@ -516,7 +517,7 @@
                 return HJalert.msg('内容最长不能超过' + maxLength + '个字符')
             }
 
-            ul.append(laytpl(elemChatMain).render(data));
+            ul.append(template(elemChatMain).render(data));
 
             var param = {
                     mine: data,
@@ -557,8 +558,8 @@
     };
 
     //接受消息
-    var messageNew = {},
-        getMessage = function(data) {
+    var messageNew = {};
+    var getMessage = function(data) {
             data = data || {};
 
             var elem = $('.HJchat-chatlist-' + data.type + data.id);
@@ -638,7 +639,7 @@
                     ul.append('<li class="HJchat-chat-system"><span>' + data.content + '</span></li>');
                 }
             } else if (data.content.replace(/\s/g, '') !== '') {
-                ul.append(laytpl(elemChatMain).render(data));
+                ul.append(template(elemChatMain).render(data));
             }
 
             chatListMore();
@@ -679,7 +680,7 @@
             chatlog = local.chatlog || {},
             ul = thatChat.elem.find('.HJchat-chat-main ul');
         HJproject.each(chatlog[thatChat.data.type + thatChat.data.id], function(index, item) {
-            ul.append(laytpl(elemChatMain).render(item));
+            ul.append(template(elemChatMain).render(item));
         });
         chatListMore();
     };
@@ -828,7 +829,6 @@
     };
 
     //暴露接口
-    exports('HJchat', new LAYIM());
-
+    window.HJchat = new LAYIM();
 
 }(window);
